@@ -1,0 +1,6 @@
+#include <openssl/evp.h>
+#include <openssl/ssl.h>
+#include <openssl/rsa.h>
+#include <openssl/x509.h>
+
+gcc yourprogram.c -lssl -lcrypto

@@ -1,0 +1,53 @@
+\documentclass[12pt]{article}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{hyperref, pagecolor, mdframed }
+\usepackage{array}
+\usepackage{tikz}
+\usepackage{listings}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=red,
+    filecolor=RoyalPurple
+}
+
+\definecolor{wgrey}{RGB}{148, 38, 55}
+\newcommand{\gr}{\color{Sepia}}
+
+\title{reunion rentrée}
+\date{19 septembre 2023}
+\begin{document}
+\maketitle
+
+Mails : fouquet@math.univ-paris-diderotfr, ylg@iriffr 
+
+\section{C : Rappels}
+Recuperer le return du main : echo \$?. -Wpointer-arith.\\
+gcc -Wall -c test.c\\
+gcc -Wall -Wpointer-arith test.c -o test
+
+
+\subsection{Noms/Pointeurs de fonctions}
+On a 
+\begin{itemize}
+    \item \_\_func\_\_ pour avoir le nom de la function
+    \item une fonction (le nom) est un pointeur constant sur le début de ses instructions avec un type 
+    \item type (*)(type1, type2, type3,...)
+    \item 
+\end{itemize}
+
+\subsection{qsort}
+Dans \#include$<$stdlib.h$>$ : qsort prend
+\begin{itemize}
+    \item un void* pour le tableau
+    \item un size\_t pour le nb d'elements du tableau
+    \item un size\_t pour la taille des elts
+    \item int (*compar)(const void *, const void *) la fonction qui permet de comparer deux elt
+\end{itemize} 
+
+
+
+
+
+\end{document}

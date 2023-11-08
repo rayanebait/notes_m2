@@ -1,0 +1,371 @@
+
+\documentclass[12pt]{article}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{hyperref, pagecolor, mdframed }
+\usepackage{graphicx, amsmath, latexsym, amsfonts, amssymb, amsthm,
+amscd, geometry, xspace, enumerate, mathtools}
+\usepackage{tikz}
+
+\theoremstyle{plain}
+\newtheorem{thm}[subsubsection]{Th\'eor\`eme}
+\newtheorem{lem}[subsubsection]{Lemme}
+
+\theoremstyle{definition}
+\newtheorem{defn}[subsubsection]{D\'efinition}
+
+\theoremstyle{remark}
+
+\newtheorem{rem}{Remarque}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=Green,
+    filecolor=RoyalPurple
+}
+
+\definecolor{wgrey}{RGB}{148, 38, 55}
+
+
+\title{Protocoles réseaux : cours1}
+\date{02 octobre 2023}
+\begin{document}
+\maketitle
+
+\section{Rappels}
+Cours m1 :
+$$\text{application}\ne\text{protocole}$$
+
+Protocoles de couche application :
+\begin{itemize}
+    \item PC$\rightarrow$serveur de mail, deux protocoles : SMTP, IMAP4.
+    \item tel$\rightarrow$serveur de mail : SMTP, IMAP4.
+    \item Fair Email$\rightarrow$serveur de mail : SMTP, IMAP4.
+\end{itemize}
+
+$\ne$
+\begin{itemize}
+    \item whatsapp ou on peut parler qu'en whatsapp (le client est sur l'appli)(probleme : c'est un protocole ET une appli)
+    \item zulip : on peut faire son propre protocole pour echanger avec le serveur mais le protocole zulip change a chaque vers
+\end{itemize}
+
+\subsection{Couches}
+Les différentes couches :
+\begin{enumerate}
+    \item Physique
+    \item Lien
+    \item Reseau
+    \item Transport
+    \item (7) Application
+\end{enumerate}
+
+En bas : le materiel. En haut : utilisateur.\\
+\section{Internet est cassé}
+\begin{center}
+    \textbf{ "internet est cassé"}.
+\end{center}
+\begin{enumerate}
+    \item Il est "Ossifié"
+    \item "Tout le monde vous en veut"
+\end{enumerate}
+
+\subsection{"Ossification"}
+\begin{rem}
+    Le routeur a que trois couches, il depasse pas IP et regarde pas les paquets. Permet de changer les protocoles du dessus.
+\end{rem}
+
+Le problème c'est que certains le font.
+\begin{defn}
+    Middlebox : entité au seins du réseau (pas aux bouts, typiquement au dessus de la troisieme couche d'un routeur) qui regarde à l'interieur des paquets.
+\end{defn}
+
+\textbf{Ex :} \begin{itemize}
+    \item Firewalls : voit ce qui respecte pas les protocoles ? Et plus mais sert a rien askip. 
+    \item En pratique, le firewall jette tout ce qui est pas TCP, UDP. Problématique.
+    \item NAT, pareil jette les paquets d'autres protocoles.
+    \item accélerateurs
+    \item black boxes (déployé par les services internet du a ansi/DGSE/autres, espionnage)
+    \item NAT$\rightarrow$limitations de la connectivité. 
+\end{itemize}
+
+\begin{lem}
+    Pour programmer sur le vrai internet :
+    \begin{itemize}
+        \item Faut utiliser TCP/UDP.
+    \end{itemize}
+    Faut traverser le NAT/Firewall.
+\end{lem}
+
+Ducoup on utilise des protocoles qui traversent le NAT et le Firewall.
+\begin{lem}
+    Http/https traversent le NAT/Firewall
+\end{lem}
+
+\begin{thm}
+    La vraie couche de convergence c'est pas IP c'est http/https.
+\end{thm}
+
+\begin{rem}
+    C'est un protocole nul : requete/reponse avec 500 octets d'entete a chaque paquet. Autre triche :\begin{itemize}
+        \item Http utilise un autre protocole de transport encapsulé en UDP, quick ou microTP !
+        \item ducoup on considère UDP en couche 3.5 et ducoup 4 octets par paquet au lieu des 500 de http.
+    \end{itemize}
+\end{rem}
+
+Questions de \textbf{Sécurité}.
+
+\section{Web et http}
+(Web = application, http = protocole application)
+
+\begin{defn}
+    Je cite "Le Web c'est un hypertexte distribué":
+    \begin{enumerate}
+        \item hypertexte : contient des hyperlien (lien qui envoient ailleurs dans le fichier)
+        \item distribué : les hyperliens envoient dans ailleurs ("impossible" de gerer les liens qui vont nul part $\rightarrow$ error 404 (on s'en fout))
+    \end{enumerate}
+\end{defn}
+
+\subsection{http/0.9}
+\begin{itemize}
+    \item Ressources identifiées par des URL : "{\color{blue}http}:{\color{Green}//www.irif.fr/}{\color{red}~jch/enseignement}
+    \item En rouge le chemin : http $\rightarrow$ Client envoie GET(chemin) au serveur qui renvoie la ressource a l'adresse.
+    \item Plein de defauts : le serveur fait RIGHT jusqu'a la fin FIN et close(fichier). Probleme si le serveur plante et coupe la co 
+    on peut pas savoir si c'est une interruption ou un fichier court.
+\end{itemize}
+
+\begin{rem}
+    \begin{enumerate}
+        \item TCP est lent au demarrage (petite fenetre qui grandit au fur et a mesure et devient efficace)
+        \item A chaque GET, http ouvre une connexion TCP (PB serait : TCP=couche 4, http=couche 7, il faudrait une autre couche)
+        \item pb quand il y a eu des img dans des fichiers (chaque balise IMG engrengeait un GET)
+    \end{enumerate}
+\end{rem}
+
+
+{\color{blue}http}:{\color{Green}//www.irif.fr/}{\color{red}~jch/enseignement}
+
+
+\subsection{http/1.0}
+On a maintenant plus de requetes
+\begin{enumerate}
+    \item GET
+    \item POST
+    \item PUT
+    \item -version
+\end{enumerate}
+
+Par exemple : GET /index.html .HTTP/1.0 permet d'obtenir /index.html avec une version 1.0 ou anterieure.\\
+Nouvelles entetes :
+\begin{itemize}
+    \item Content-Type : text/html (possibilité de faire attention a pas lire un fichier pas .html en html et avoir d'autres extensions en particuliers images)
+    \item Content-Length : résoud un des pbs
+\end{itemize}
+
+\subsection{http/1.1}
+pas mal
+\begin{itemize}
+    \item entete en type texte
+    \item terminaison fiable(chunked)
+    \item transferts multiples sur 1 connexion
+\end{itemize}
+
+A ce moment la $\rightarrow$ : -Javascript (scripts dans les pages web)(pas forcément utile en soit).\\
+\begin{itemize}
+    \item XMLHttpRequest permet de faire des requete Http depuis le script !
+\end{itemize}
+
+Ducoup application web !
+\begin{thm}
+    Javascript + XMLHttpRequest $\rightarrow$ Web 2.0
+\end{thm}
+
+AJAX : L'interface est plus gerée par l'utilisateur.
+\begin{enumerate}
+    \item Le serveur envoie une page html
+    \item le programme js envoie des requetes de \textbf{structures de données} (point important)
+    \item le serveur ne renvoie pas du html mais des données qui permettent de remplir la page html
+\end{enumerate}
+
+XMLHttpRequest devient fetch.
+
+\subsection{http/2}
+mauvais
+\begin{itemize}
+    \item entete en binaire (trop de requetes) (moins lourd : algo de compression)
+    \item multiplexage : requetes/reponses simultanées $\rightarrow$ pas compatible avec TCP
+\end{itemize}
+
+\subsection{http/3}
+Tres bien mais compliqué : que Google qui utilise car les seuls qui ont reimplementé
+\begin{itemize}
+    \item UDP (quick)
+    \item multiplexage efficace
+\end{itemize}
+
+\subsection{Sérialisation/désérialisation}
+http transmet des octets : java/js/python utilisent des structures de données. 
+\begin{itemize}
+    \item Il faut traduire en octets les structures de données
+\end{itemize}
+
+Comment sérialiser/déserialiser
+\begin{enumerate}
+    \item Ad hoc : LL(1) à la main (faire une grammaire)
+    \item XML : nul 
+    \item JSON : \begin{itemize}
+        \item [1,2,3] (sous ensemble de la syntaxe js)
+        \item string utf-16 (pas de binaire)
+        \item nombre (javascript, pas tout)
+        \item tableaux
+        \item dictionnaires (clés sont forcément des chaines)
+    \end{itemize} Bien mieux que XML mais tjr pas super. Le binaire doit être géré ad hoc, y faut aussi sérialiser les structures
+    \item Formats binaires \begin{enumerate}
+        \item Ad hoc
+        \item génériques : CBOR
+        \item Protobuf : Structures $\rightarrow$ codage ad hoc a la compilation (dependance) $\rightarrow$ tres instable (si on change la struct le code peut etre completement different)
+    \end{enumerate}
+\end{enumerate}
+
+
+
+but : protocoles qui marche aussi bien pour une appli web que native
+\section{Structure des API}
+Pour faire une interface Web : faut ecrire du html. Pour faire une base de donnée SQL : faut ecrire du SQL en html
+\begin{enumerate}
+    \item POST /sql.php HTTP/1.1
+    \item HOST sql.example.com
+    \item Content-type : application/sql
+    \item Content-Length: 18
+    \item DROP TABLE USERS (TABLE USERS est la table sql, TABLE USERS est stockée dans la RAM)
+\end{enumerate}
+Interet de ça : on utilise toute la puissance de la base de donnée. pb : fuite de l'implémentation. Mieux :
+\begin{enumerate}
+    \item POST /sql.php?query=DROP\%20TABLE...
+    \item DELETE /table/users
+\end{enumerate}
+
+\subsection{Des APIS}
+SOAP :
+\begin{itemize}
+    \item  complexe
+    \item utilisant XML ($\rightarrow$ XMC-RPC)
+\end{itemize}
+requetes enormes codées en XML "horrible"\\
+REST :
+\begin{itemize}
+    \item API représente un ensemble d'états (Objets sans methodes) côté serveur
+    \item Si on a un serveur d'impression pour imprimer on fait pas une requete imprimer un fichier $\rightarrow$ on créer un objet impression
+    \item Pas de codage (on stocke les données telle quelles, pas d'agrégation, un GET pour chacun des attributs)
+    \item etats identifiés par des URL (diff entre DROP TABLE USERS $\leftrightarrow$ DELETE /table/users)
+    \item opératons codées dans la méthode 
+    \item Pas d'état de session (pas besoin de se souvenir de chaque client)
+\end{itemize}
+
+lulu.informatique.univ-paris-diderot.fr :8443
+
+La lumière est "glacialement lente" : Cacher la latence de l'univers,
+\begin{itemize}
+    \item batching(lots de requetes) $\rightarrow$ Pas de REST. (probleme de gestion des erreurs, si la premiere requete est refusée on peut plus arreter)
+    \item pipelining.
+    \item prevoir l'avenir .(sur un mmo les npc apparaissent d'abord a un endroit predit par l'ordi puis ailleurs une fois que le serveur repond.)
+    \item Cache ! (copie des données, attention a savoir quelles données sont celles à jour)(pb d'invalidation du cache)
+\end{itemize}
+\subsection{REST-fut ou REST-like}
+
+\subsection{Tout le contraire $\rightarrow$ WebSocket}
+
+\section{Proxys et caches}
+\subsection{Localisation des caches}
+
+\begin{itemize}
+    \item Cache application. (le chat du site qui se met a jour que au reload (les msgs sont en caches))
+    \item Cache navigateur. (partagé entre les pages)
+    \item Proxy
+\end{itemize}
+
+Digression : proxy(censé être proche du client)(serveur mandataire)\\
+
+Apparemment pas d'interco en couche 4 à 7.
+Interconnexion \begin{enumerate}
+    \item couche 1 : prise/hub 
+    \item couche 2 : switch
+    \item couche 3 : routeur
+    \item couche 4, 7 (plus "bout en bout") : proxy
+\end{enumerate}
+
+Types de proxy HTTP :
+\begin{itemize}
+    \item proxy traditionnel : explicitement configuré
+    \item proxy transparent : le client à aucune idée du proxy, par exemple le routeur envoie à un proxy. Pb, c'est un middlebox
+    $\rightarrow$ mal. Par interception
+    \item proxy inverse permet : \begin{enumerate}
+        \item plusieurs serveurs, répliqués, distincts.
+        \item politiques de securité
+        \item cache (crétin?)
+    \end{enumerate}
+\end{itemize}
+
+
+\subsection{proxy inverse : CDN}
+Au moment d'une nouvelle maj ios : 500 000 000 de maj de 10 GO. Stratégies ? Mettre des proxys qui ont la maj PARTOUT.
+Pb en dehors des majs les proxys sont loués? Solution :
+\begin{itemize}
+    \item  Il y a des boites de location de reseau de proxys avec cache : akamai (host www.apple.com)
+\end{itemize} 
+70\% du reseau passe par akamai !
+
+\subsection{Validations}
+Une requete HTTP qui semble aller direct au serveur passe en fait par au plus 5 caches (proxy, CDN, proxy inverse).
+En HTTP il y'a 3 validateurs (metadonnée associée au paquets : si il a changé la donnée est pas reutilisable) :
+\begin{itemize}
+    \item URL (si sur un blog on change une entrée, comment on met a jour tout les utilisateurs ? On peut modifier l'URL !)
+    \item Last-Modified (Pas précis, a pas utiliser)
+    \item Etag (meme etag alors on peut reutiliser)
+\end{itemize}
+Pas de Etag, pas de Last-Modified su rle document : on utilise pas de cache.
+\subsection{Controle de Cache}
+(Ctrl+R, pas de revalidation. Ctrl+shift+R, revalidation de bout en bout)\\
+On veut pas forcément la dernière version systématiquement. Par exemple un logo sur un site.
+\begin{itemize}
+    \item l'entete Cache-Control : \begin{enumerate}
+        \item no-cache (ctrl+r)
+        \item max-age en seconde, update le cache si la donnée est plus veille que max-age.
+        \item Pas d'entete : \begin{itemize}
+            \item si POST$\rightarrow$ On peut pas mettre en cache
+            \item si GET$\rightarrow$ On peut mettre en cache
+        \end{itemize}
+    \end{enumerate}
+\end{itemize}
+
+Pour la revalidation:
+\begin{enumerate}
+    \item HEAD : serveur renvoie le Etag
+    \item if meme Etag : GET
+\end{enumerate}
+Problème, faut attendre 2 requetes. Sol : GET conditionnel
+\begin{enumerate}
+    \item GET (header : if-None-Match) : retourne les données ou retourne none-changed
+\end{enumerate}
+
+
+
+\section{Notifications asynchrone}
+Pas de notifications asynchrones : Le serveur n'envoie rien sans requetes.
+
+\section{web socket}
+API REST, etc en : http et udp. Ou tcp : flot d'octets 1 par 1. Gros problème.
+\begin{itemize}
+    \item Web Socket : On utilise le protocole qu'on veut ! On peut faire des flots d'objets JSON.
+    \item Probleme des Web socket :\begin{enumerate}
+        \item perte du cache
+        \item perte de la resistance
+        \item perte du load balancing
+    \end{enumerate}
+\end{itemize}
+
+
+
+
+
+
+\end{document}

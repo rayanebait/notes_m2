@@ -1,0 +1,41 @@
+\documentclass[12pt]{article}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{hyperref, pagecolor, mdframed }
+\usepackage{graphicx, amsmath, latexsym, amsfonts, amssymb, amsthm,
+amscd, geometry, xspace, enumerate, mathtools}
+\usepackage{tikz}
+
+\theoremstyle{plain}
+\newtheorem{thm}[subsubsection]{Th\'eor\`eme}
+\newtheorem{lem}[subsubsection]{Lemme}
+
+\theoremstyle{definition}
+\newtheorem{defn}[subsubsection]{D\'efinition}
+
+\theoremstyle{remark}
+\newtheorem{rem}{Remarque}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=Green,
+    filecolor=RoyalPurple
+}
+
+\definecolor{wgrey}{RGB}{148, 38, 55}
+
+
+\begin{document}
+\section{raccourcis}
+\begin{itemize}
+    \item Control+u pour afficher le code source du serveur tp2. 
+    \item Curl -ki $<$url$>$ pour envoyer un GET et -i pour avoir les entetes et -k pour pas prendre en compte que TLS est pas a jour
+    \item Curl -X DELETE $<$URL$>$ pour supprimer 
+\end{itemize}
+
+
+
+
+
+
+\end{document}

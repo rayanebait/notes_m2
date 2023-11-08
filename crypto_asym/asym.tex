@@ -1,0 +1,359 @@
+\documentclass[12pt]{article}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{hyperref, pagecolor, mdframed }
+\usepackage{tabularx, graphicx, amsmath, latexsym, amsfonts, amssymb, amsthm,
+amscd, geometry, xspace, enumerate, mathtools}
+\usepackage{tikz}
+
+\theoremstyle{plain}
+\newtheorem{thm}[subsubsection]{Th\'eor\`eme}
+\newtheorem{lem}[subsubsection]{Lemme}
+
+\theoremstyle{definition}
+\newtheorem{defn}[subsubsection]{Definition}
+\newtheorem{prop}[subsubsection]{Proposition}
+
+\newcommand{\fdiv}{\textrm{div}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\algK}{\overline{K}}
+\newcommand{\algF}{\overline{\mathbb{F}}}
+\newcommand{\Pic}{\textrm{Pic}}
+\newcommand{\Hom}{\textrm{Hom}}
+\newcommand{\End}{\textrm{End}}
+\newcommand{\Disc}{\textrm{Disc}}
+\newcommand{\Det}{\textrm{Det}}
+\newcommand{\Tr}{\textrm{Tr}}
+\newcommand{\Or}{\mathcal{O}}
+\newcommand{\OK}{\mathcal{O}_{K}}
+\newcommand{\OL}{\mathcal{O}_{L}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\ai}{\mathfrak{a}}
+\newcommand{\bi}{\mathfrak{b}}
+\newcommand{\w}{\omega}
+\newcommand{\gr}{\color{Sepia}}
+\newcommand{\rg}{\color{Red}}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=Green,
+    filecolor=RoyalPurple
+}
+
+\newcolumntype{M}[1]{>{\raggedright}m{#1}}
+\definecolor{wgrey}{RGB}{148, 38, 55}
+
+
+\begin{document}
+\title{Cryptographie asymétrique}
+\date{19 septembre 2023}
+\maketitle
+
+\section{Intro}
+L'asymétrique ne sert pas à chiffrer mais plutot aux echanges de clés, etc..\\
+\textbf{Ansi} recommande 
+\begin{itemize}
+    \item Des clés de 80 à 100 bits pour un niveau moyen de sécu (données ne durant pas dans le temps $\sim$ minutes)
+    \item $>$ 100 bits : forts
+\end{itemize}
+
+\section{Arithmétique entiers}
+La complexité est calc en fonction de :
+\begin{itemize}
+    \item La taille des données.
+    \item ex : un entier $n$ en représentation binaire est en $log_2(n)=log(n)$.
+\end{itemize}
+
+A regarder : table de soustraction binaire lol.\\
+
+\subsection{multiplication}
+\begin{align*}
+    && 11101=a&&\\
+    &&\times 1101=b
+\end{align*}
+
+multiplication naive :
+\begin{itemize}
+    \item Taille(b) additions d'elts de taille a.
+    \item Complexité : Taille(a)*Taille(b)
+    \item Memoire : Taille(a*b)=Taille(a)+Taille(b)
+\end{itemize}
+
+Méthode de Karatsuba : $a,b\in \N$ et $k=log(a)=log(b)$. $a=\alpha2^{k/2}+\beta$, $b=\gamma2^{k/2}+\delta$. On écrit :
+$$ab=\alpha\gamma2^k+(\alpha\gamma+\beta\delta-(\alpha-\beta)(\gamma-\delta))2^{k/2}+\beta\delta$$
+On remarque que ya 3 multiplication d'élts de taille $k/2$ et $6$ soustr/add de taille $k/2$.\\
+
+\begin{itemize}
+    \item Complexité : $T(k)$ est donnée par 
+    \begin{align*}
+        3T(k/2)+6O(k/2)&=3^T(k/4)+6*3O(k/4)+6O(k/2)\\
+        &=3^{log(k)}+2ck\sum_{i=1}^{log(k)}(3/2)^i\\
+        &=3^{log(k)}+2Ck\frac{(3/2)^{log(k)} - 1}{(3/2) - 1}\\
+        &=\dots\\
+        &=O(k^{log(3)})
+    \end{align*}
+
+\end{itemize}
+
+\subsection{division}
+Division naive (euclidienne) :
+\begin{itemize}
+    \item Taille(a)-Taille(b)+1 soustraction de taille Taille(b).
+    \item Complexité : O((taille(a)taille(b)+1)taille(b)).
+    \item Mémoire : Taille(a)-Taille(b)+1  +  taille(b).
+\end{itemize}
+
+
+\subsection{algorithme d'euclide normal/etendu}
+\begin{lem}
+    Avec $a=r_0$, $b=r_1$, $r_{i}=q_{i+2}r_{i+1}+r_{i+2}$. On a $r_{i+2}<r_i/2$. Sauf pour les derniers i.
+\end{lem}
+
+D'ou
+\begin{itemize}
+    \item Au plus $log(a)$ divisions : i.e. $\sum_{i=0}^{k-1}(log(r_i)-log(r_{i+1}+1)log(r_i))\leq log(a)(k+log(a))$
+    \item Complexité en $log(a)^2$
+\end{itemize}
+
+Euclide étendu : $u_0=1$, $u_1=0$ et $v_0=0$, $v_1=1$ et on écrit
+\begin{align*}
+    &u_{i+2}=u_i-q_iu_{i+1}\\
+    &v_{i+2}=v_i-q_iv_{i+1}\\
+\end{align*}
+
+Pour calculer le pgcd :
+\begin{itemize}
+    \item Complexité : $O(log^2(a))$. (exo)
+\end{itemize}
+
+A montrer :
+\begin{lem}
+    $n$ un entier, calcul de la racine carrée entière de $n$ en $$O(log^3n)$$
+\end{lem}
+
+\subsection{indicatrice d'euler/inversion}
+\begin{prop}
+    $a^{-1}~mod~n$ se calcule en $$O(log^2(n))$$ grace a euclide
+\end{prop}
+
+\begin{defn}
+    $\phi~:~\Z/n\Z\rightarrow\#\{0<i\leq n\}^*$
+\end{defn}
+
+\begin{prop}
+    On veut $\phi(1)=1$ pour la récursion.
+\end{prop}
+
+\begin{prop}
+    $\sum_{d\mid n}\phi(d)=n$
+\end{prop}
+Ca se prouve en posant $sum_{d\mid n}\phi(d)=f(n)$ alors : $$f(mn)=\sum_{d\mid mn}\phi(d)=\sum_{d_1\mid n}\sum_{d_2\mid m}\phi(d_1d_2)=f(m)f(n)$$. 
+On écrit ducoup $f(n)=f(\prod p_i^{\alpha_i})$ et $f(p^{\alpha})=\sum_{k<\alpha} \phi(p^k)=\sum_{k}p^{k}-p^{k-1}=p^{\alpha}$
+
+\begin{prop}
+    $p\ne q$ deux nombres premiers et $n=pq$. On retrouve $p,q$ en $O(log^3(n))$ avec $n,\phi(n)$.
+\end{prop}
+
+\section{corps finis}
+$q=p^d$
+\begin{prop}
+    \begin{itemize}
+        \item Complexité de l'addition/soustraction dans $\mathbb{F}_q$ : $O(log(q))$
+        \item Complexité de la mult/l'inverse dans $\mathbb{F}_q$ : $O(log^2(q))$
+    \end{itemize}
+\end{prop}
+
+Pour la multiplication : $2d-2$ calculs des sommes $\sum a_ib_{j-i}$ et $d$ mults a chaque fois puis $d$ additions. A la fin 
+$O(log^2(q))$. 
+
+
+\begin{prop}
+    $d=gcd(n, q-1)$ racines n-emes de l'unité dans $\F_q$. $\F_q$ admet une racine primitive ssi $n\mid q-1$.
+\end{prop}
+Pour le deuxieme truc $(g^j)^n=1$ ssi $q-1\mid nj$ d'ou $q-1/d\mid j$ et on a $d$ valeurs possibles pour $j$.
+
+\subsection{résidus quadratiques}
+On prend $p\ne 2$ : 
+\begin{prop}
+    $x\mapsto \left(x^{p-1/2}\right)$ donne l'indice de $\F_p^{*2}$ et deux non résidus sont des puissances impaires donc le produit est une puissance paire.
+\end{prop}
+
+\begin{prop}
+    C'est un morphisme de groupe.
+\end{prop}
+
+Maintenant on remplace $x\mapsto x^{p-1/2}$ par l'unique caractère abélien dans $\{\pm\}$ (Jacobi).
+\subsection{Calcul de racine carrée, algo de shanks tonelli}
+On réduit ca à un calcul de racine $2^{\alpha}$-eme de l'unité !
+
+\begin{enumerate}
+    \item On écrit $p-1=2^{\alpha}*s$, s impair.
+    \item $r=a^{(s+1)/2}$
+    \item on résoud $x^2a^{-1}\equiv 1~mod~p$
+    \item En gros : $1\equiv a^{(p-1)/2}\equiv a^{2^{\alpha-1}s}\equiv (r^2a^{-1})^{2^{\alpha-1}}~mod~p$
+    \item D'ou on cherche une racine de l'unité, $z$, alors $z^2\equiv y$ avec $y=r^2a^{-1}$.
+    \item $z^2y\equiv y^{2^{\alpha -1}}~mod~p$ d'ou $(z^2y^{1-2^{\alpha-1}})^{2^{\alpha-1}}\equiv z^{2^{\alpha}}(y^{2^{\alpha-1}})^{1-2^{\alpha-1}}\equiv z^{2^{\alpha}}\equiv1~mod~p$
+    \item D'ou il faut trouver une racine $2^{\alpha}$-eme de l'unité.
+\end{enumerate}
+Determination de la racine $2^{\alpha}$-eme de l'unité :
+\begin{enumerate}
+    \item Pour $\left(\frac{n}{p}\right)=-1$ on pose $b=n^s$
+    \item Alors $\lvert b\rvert^{2^{\alpha}}$.
+\end{enumerate}
+
+On cherche ensuite le $b^j$ tel que $b^{2j}r^2a^{-1}\equiv1~mod~p$, on écrit $j=j_0+2j_1+...+2^{\alpha-1}j_\{\alpha-1\}$ :
+\begin{enumerate}
+    \item $b^{2j}r^2a^{-1}\equiv b^{2j_0+...+2^{\alpha}j_{\alpha-1}}\equiv b^{2j_0+...+2^{\alpha-1}j_{\alpha-2}}~mod~p$
+    \item On regarde $(b^{2j}r^2a^{-1})^{2^{\alpha-2}}\equiv (b^{2^{\alpha-1}})^{j_0}a^{2^{\alpha-2}s}~mod~p$
+    \item Comme $b^{2^{\alpha-1}}\equiv n^{(p-1)/2}\equiv -1~mod~p$
+    \item Alors pour avoir $(b^{2j}r^2a^{-1})^{2^{\alpha-2}}\equiv 1$ il faut prendre $j_0=0$ ssi $(r^2a^{-1})^{2^{\alpha-1}}$
+\end{enumerate}
+Maintenant pour les autres coeffs que $j_0$, on suppose qu'on connait les $l<\alpha-2$ premiers tq 
+$((b^{j_0+...+2^{l}j_l})r^2a^{-1})^{2^{\alpha-2-l}}~mod~p$ on cherche $j_{l+1}$ tq :
+\begin{enumerate}
+    \item $((b^{j_0+...+2^{l}j_l})r^2a^{-1})^{2^{\alpha-2-l}}~mod~p$
+    \item On a $(b^j)^{2^{\alpha-2-l}}(r^2a^{-1})^{2^{\alpha-2-l-1}}\equiv b^{2^{\alpha-2-l}(j_0+2j_1+...+2^lj_l)}b^{2{\alpha-1}j_{l+1}}b^{2^{\alpha}(...)}...~mod~p$
+    \item A nouveau on a $b^{2^{\alpha-1}j_{l+1}}\equiv (-1)^{j_{l+1}}$
+    \item Et donc on pose $j_{l+1}=0$ ssi $((b^{j_0+...+2^lj_l})^2r^2a^{-1})^{2^{\alpha-2-l-1}}\equiv 1~mod~p$
+\end{enumerate}
+
+
+\section{Protocoles de cryptographie à clef publique}
+Basé sur le principe de Kerkhoff.\\
+\newline
+\begin{tabular}{M{8 cm}  M{8 cm}}
+    \textbf{Crypto symétrique} & \textbf{Crypto asymétrique}\\
+    \tabularnewline
+    $+$ rapide & $+$lent\\
+    \tabularnewline
+    1 clef partagée & $2$ clefs\\
+    \tabularnewline
+    $\times$ & Mise en reseau facile\\
+    \tabularnewline
+    Taille de clef petite & Taille de clé grande \\
+\end{tabular}
+
+Probleme de la crypto sym : nombre quadratique de clé par rapport au nb de personnes face a linéaire pour l'asym. ($+$ faut pouvoir échanger les clés)\\
+
+\noindent Cryptographie asymétrique : \begin{enumerate}
+    \item Authentification
+    \item Echange de clefs
+    \item Signature
+\end{enumerate}
+
+Etant donné une fct de chiffrement asym $f$ :
+\begin{itemize}
+    \item $f(m,k_{pub})=c$
+    \item $f^{-1}(c, k_{priv})=m$
+\end{itemize}
+Authentification par challenge :
+\begin{itemize}
+    \item $f(challenge,k_{pub})\rightarrow c$ un challenge est donné et doit être dechiffré
+    \item $challenge=m\leftarrow f^{-1}(c,k_{priv})$ 
+\end{itemize}
+
+\noindent Echange de clefs:
+\begin{itemize}
+    \item k la clef de session qu'on veut partager
+    \item $f(k,k_{pub})\rightarrow c$ 
+    \item $k=f^{-1}(c, k_{priv})$
+\end{itemize}
+\noindent Signature d'un message :
+\begin{itemize}
+    \item $f^{-1}(m, k_{priv})=sign$
+    \item $f(sign, k_{pub})=m$
+\end{itemize}
+
+Propriétés d'une signature :
+\begin{enumerate}
+    \item Non-répudiable (irrévocable, on peut pas dire qu'on l'a pas signé)
+    \item Le message est non-modifiable : inaltérable
+    \item Authentique
+    \item Non-réutilisable
+    \item Infalsifiable
+\end{enumerate}
+
+\subsection{RSA}
+Décrit \href{https://en.wikipedia.org/wiki/RSA_(cryptosystem)}{ici}. On
+regarde des attaques sur RSA, les $p,q$ doivent être tous achetés ! 
+\begin{defn}
+    Attaque par module commun 
+\end{defn}
+Etant donné une communauté de $k$ personnes ayant tous.tes $p*q=n$. 
+    Chaque utilisateurs recoit $(N, e_i(publique), d_i(privee))$. Si on connait $e_i,d_i$ alors 
+    on sait que $e_id_i\equiv 1~mod~\phi(n)$ d'ou $e_id_i=1+k\phi(n)$. \\
+    On pose $m=e_id_i-1=k\phi(n)$ d'ou $\forall a\in (\Z/N\Z)^{\times}$,$$a^m\equiv 1~mod~\phi(n)$$
+    Or $4\mid \phi(n)$ donc $4\mid m$. \\
+    Donc/etant donné $$a^m\equiv 1~mod~n$$.
+    On a $a^{m/2}$ est une racine carrée de $1$ mod $n$(y'en a $4$). Si $a^{m/2}\equiv\alpha\neq \pm 1~mod~n$ 
+    alors $(\alpha-1)(\alpha+1)\equiv 0~mod~N$ et $gcd(\alpha-1, n)\neq 1$ et 
+    $gcd(\alpha-1, n)=p$. Soit $a\in (\Z/n\Z)^{\times}$. On pose : $m=2^ts$
+    \begin{itemize}
+        \item On calc $a^s~mod~n$, si $=\pm 1~mod~n$ on change $a$.
+        \item Sinon on calc successivement $a^{2^is}~mod~n$. Et on s'arrete
+        des qu'on trouve $1$.
+        \item Si a l'étape d'avant on change $a$.
+        \item sinon on a trouvé $\alpha$.
+    \end{itemize}
+Autre attaque : Si on chiffre $m$ pour deux destinataire : 
+\begin{itemize}
+    \item $c_1\equiv r^{e_1}~mod~n$
+    \item $c_2\equiv r^{e_2}~mod~n$
+\end{itemize}
+Si $gcd(e_1,e_2)=1$ alors $\exists u,v\in\Z$ tq $ue_1+ve_2=1$. Donc
+$c_1^u*c_2^v=m~mod~n$.\\
+
+\begin{itemize}
+    \item Besoin d'une fonction de hachage pour la signature
+\end{itemize}
+
+Alice ne veut pas signer $m$, Marvin choisit $r\in(\Z/n\Z)^{\times}$ et calcule
+$m'=m*r^e~mod~n$. Alice signe $m'$, donc Marvin obtient $sign(m')\equiv m'^d\equiv (mr^e)\equiv m^dr$.\\
+
+Nouvelle attaque 
+\begin{defn}
+    par exposant publique petit :
+\end{defn}
+On propose que tout le monde utilise le même e petit pour accélerer le chiffrement: 
+$m$ est chiffré par $k$ utilisateurs differents:
+$
+\begin{cases}
+    c_1\equiv m^e &mod~n_1\\
+    \vdots&\\
+    c_k\equiv m^e &mod~n_k
+\end{cases}
+$
+Soit les $n_i$ sont premiers entre eux et on fait un lemme chinois, si $e<k$, $m^e<\prod_i n_i$.
+Si pas premiers entre eux : gros pb.\\
+\begin{defn}
+    Attaque par petit exposant privé, but : améliorer la vitesse de déchiffrement.
+\end{defn}
+\begin{thm}
+    Soit $N=pq$ avec $q<p<2q$ et $d=1/3\sqrt[4]{n}$. Etant donné le couple $(n,e)$ avec $ed\equiv1~mod~\phi(n)$, on peut
+    retrouver efficacement $d$.
+\end{thm}
+\noindent\textbf{Preuve :} On pose $ed-k\phi(n)=1$. D'ou $\frac{e}{\phi(n)}-\frac{k}{d}=\frac{1}{d\phi(n)}$.
+On approche $\phi(n)$ par $n$ et en utilisant le fait $d<1/3\sqrt[4]{n}$ on a :
+$$\lvert \frac{e}{n}-\frac{k}{d}\rvert<\frac{1}{2d^2}$$
+En passant par un dév en fractions continues à la bonne précision on retrouve $k/d$.\qed
+
+RSA est pas indistinguable.(exponentiation binaire est rapide)
+
+\subsection{Probleme de log discret}
+Securité dépend du groupe dans lequel on travaille : Si on prend $G=(\Z/p\Z,+)$ et $h=gx~mod~p$ alors $x=hg^{-1}$, une étape.
+\begin{defn}
+    Problème de Diffie-Hellman(DHP): Etant donnés $g,g^a,g^b$ peut-on trouver $g^{ab}$.
+\end{defn}
+
+\begin{defn}
+    Signature d'El Gamal : $k$ doit être secret et d'usage unique.
+\end{defn}
+\begin{itemize}
+    \item $k$ doit être secret : a faire
+    \item $k$ doit être d'usage unique : pareil
+\end{itemize}
+
+
+\end{document}

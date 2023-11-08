@@ -1,0 +1,391 @@
+\documentclass[12pt]{article}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{hyperref, pagecolor, mdframed }
+\usepackage{graphicx, amsmath, latexsym, amsfonts, amssymb, amsthm,
+amscd, geometry, xspace, enumerate, mathtools}
+\usepackage{tikz}
+
+\theoremstyle{plain}
+\newtheorem{thm}[subsubsection]{Th\'eor\`eme}
+\newtheorem{lem}[subsubsection]{Lemme}
+\newtheorem{prop}[subsubsection]{Proposition}
+\newtheorem{propr}[subsubsection]{Propri\'et\'e}
+\newtheorem{cor}[subsubsection]{Corollaire}
+\newtheorem{intro}[section]{Introduction}
+\newtheorem{thm2}[subsection]{Th\'eor\`eme}
+\newtheorem{lem2}[subsection]{Lemme}
+\newtheorem{prop2}[subsection]{Proposition}
+\newtheorem{propr2}[subsection]{Propri\'et\'e}
+\newtheorem{cor2}[subsection]{Corollaire}
+
+\theoremstyle{definition}
+\newtheorem{defn}[subsubsection]{D\'efinition}
+\newtheorem{rmq}[subsubsection]{Remarque}
+\newtheorem{conj}[subsubsection]{Conjecture}
+\newtheorem{exmp}[subsubsection]{Exemples}
+\newtheorem{quest}[subsubsection]{Exercices}
+\newtheorem{defn2}[subsection]{D\'efinition}
+\newtheorem{rmq2}[subsection]{Remarque}
+\newtheorem{conj2}[subsection]{Conjecture}
+\newtheorem{exmp2}[subsection]{Exemples}
+\newtheorem{quest2}[subsection]{Exercices}
+
+\theoremstyle{remark}
+\newtheorem{rem}{Remarque}
+\newtheorem{note}{Note}
+
+\newcommand{\M}{\mathcal{M}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Or}{\mathcal{O}}
+\newcommand{\gr}{\color{Sepia}}
+\newcommand{\rg}{\color{Red}}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=Green,
+    filecolor=RoyalPurple
+}
+
+\definecolor{wgrey}{RGB}{148, 38, 55}
+
+
+\title{Cryptographie}
+\date{26 septembre 2023}
+\begin{document}
+\maketitle
+
+On suit le introduction to modern cryptography de katz et lindell je crois. (celui que j'ai en partie lu)
+
+\section{formalisme}
+$\M$ un ensemble.
+
+\subsection{Schéma de signature numérique}
+\begin{defn}
+    Triplet d'algorithme probabilistes, $\Pi$,(classe avec trois élts) "efficaces"($1/10$ de sec).
+\end{defn}
+
+\begin{itemize}
+    \item KeyGen(void) : retourne ($s_k,v_k$), clé de signature(privée), clé de vérification(publique parfois).
+    \item sgn Sign($s_k$, m) prend clef privée et msg et renvoie une signature $\sigma$.
+    \item bool Verify($v_k$, m, $\sigma$) renvoie vrai ou faux.
+\end{itemize}
+
+Tout ça tel que $\forall~m\in\M$, si $(s_k,v_k)\leftarrow KeyGen()$
+$$Verify(v_k, m, Sign(s_k,m))=1$$
+
+
+\subsection{Securité $(\epsilon, t)$}
+A éviter :
+\begin{itemize}
+    \item Manque de formalisme.
+    \item Avoir un modèle trop fort qui ne peut être vérifié (il y a des attaques structurelles)(Une personne a 50 km d'une centrale est une attaque)
+    \item modèle trop faible.(Un groupe de personnes armée attaque la centrale pas considéré comme une attaque)(ne prend pas en compte des attaques réalistes)
+\end{itemize}
+
+\begin{defn}
+    Def bancale :$1.$ $\Pi$ est sécurisé si tout individu malveillant qui est pas censé pouvoir signer ne peut pas signer.
+\end{defn}
+
+A defs "qui est pas censé pouvoir signer".
+
+\begin{defn}
+    $2.$ $\Pi$ est securisé si $\forall m\in\M$ $\forall(v_k,s_k)\leftarrow Keygen()$, il n'existe pas d'individu qui peut produire une signature $\sigma$,
+    tel que $Verify(v_k,m,\sigma)=1$.
+\end{defn}
+
+\begin{defn}
+    $3.$ $\Pi$ est securisé, si $\forall m\in\M$ $\forall(s_k,v_k)\leftarrow Keygen()$...
+\end{defn}
+
+bon la vrai def :($\epsilon,t)$ sécurité
+\begin{defn}
+    $\Pi$ est securisée si $\forall m\in\M$ . Il n'existe pas d'algo $A$ finissant en temps $t$
+    tel que $$Pr(Keygen()\rightarrow(s_k, v_k) \&\& (Verify(v_k, m, A(v_k)) == 1))\leq \epsilon$$
+\end{defn}
+
+On définit $ExpInforg(A,\Pi, m)$: \\
+\indent \indent-$(s_k,v_k)\leftarrow \Pi.Keygen()$\\
+\indent \indent-$\sigma \leftarrow A(v_k)$\\
+\indent \indent-Retourne $\Pi.Verify(v_k, m, \sigma)$\\
+
+On réecrit la def avec:
+\begin{defn}
+    $$Pr(ExpInforg_{A,\Pi,m}() == 1)\leq 10^{-10}$$
+\end{defn}
+
+Un souci avec $ExpInforg$ (modèle trop faible). Si $\Pi$ était sécurisé on pourrait construire
+$\Pi'$ pareil que $\Pi$ ou verify renvoie $1$ aussi si $m = \text{message compromettant}$ signé par la mauvaise personne.(il est aussi sécurisé et la un message absurde est vérifié)
+(pas sur d'avoir compris) (en gros $m$ est choisi en amont)
+
+
+Je crois qu'on dit que on choisit plus $m$ a l'avance c'est $A$ qui le génère.\\
+\newline
+
+On redéfinit $ExpInforg_{A,\Pi}()$: \\
+\indent \indent-$(s_k,v_k)\leftarrow \Pi.Keygen()$\\
+\indent \indent-$(m, \sigma)\leftarrow A(v_k)$\\
+\indent \indent-Retourne $\Pi.Verify(v_k, m, \sigma)$\\
+\newline
+
+On sait aussi que dans le monde réel l'attaquant peut avoir accès à des paires $(m,\sigma)$ particulières.(Il suffit que quelqu'un signe un msg alors une paire est disponible, trivialement)\\
+
+\indent Le pb vient quand on arrive à signer un msg qui n'a pas a être signé. \\
+\newline
+
+On redéfinit $ExpInforgdyn_{A,\Pi}()$: \\
+\indent \indent -$(s_k,v_k)\leftarrow \Pi.Keygen()$\\
+\indent \indent -$Q=\emptyset$ qui stockera tout les messages signés.(variable globale)\\
+\noindent On ajoute un algorithme (l'oracle)
+\begin{itemize}
+    \item $O_{s_k}(m)$ :
+    \item $Q = \{m\}\cup Q$ 
+    \item $\sigma\leftarrow \Pi.Sign(s_k, m)$
+    \item retourne $\sigma$
+\end{itemize}
+
+\indent \indent-$(m, \sigma)\leftarrow A^{O_{s_k}()}(v_k)$\\
+\indent \indent-Retourne $\Pi.Verify(v_k, m, \sigma) \&\& m\notin Q$\\
+
+Ducoup la 
+\begin{defn}
+    $\Pi$ est $(\epsilon, t)$-securisé si il n'existe pas de $A$ tournant en temps $t$ tq 
+    $$Pr((s_k,v_k)\leftarrow Keygen() \&\& ExpInforgdyn_{A,\Pi}()==1)\leq \epsilon$$
+\end{defn}
+
+
+\subsection{Sécurité asymptotique}
+\begin{defn}
+    $f:\N\rightarrow\R$ est négligeable si pour tout $k\in\N$:$$f(\lambda)=O(1/\lambda^k)$$On note $Negl$ l'ensemble des fcts negl.
+\end{defn}
+
+\begin{rem}
+    On peut aussi prendre des grands $O$ et des polynomes quelconques (réels).
+\end{rem}
+
+\begin{prop}
+    $Negl$ est un $\R[X]$-module.(clair)
+\end{prop}
+
+mtn la bonne def:
+\begin{defn}
+    Soit $\Pi_S$ un schéma de signature numérique. On dit que le schéma est sécurisé asymptotiquement si pour tout algorithme
+    probabiliste polynomial $\mathcal{A}$ : $$Pr(Exp_{\Pi,\mathcal{A}}(\lambda))=neg(\lambda)$$
+\end{defn}
+
+
+\section{Chiffrement à clefs secrètes}
+
+\begin{defn}
+    Schéma de chiffrement à clef secrète (symétrique) : Triplet d'algo PPT
+    \begin{enumerate}
+        \item KeyGen($1^{\lambda}$), le paramètre de complexité est $\lambda$
+        \item Enc(k, m)
+        \item Dec(k, c)
+    \end{enumerate}
+\end{defn}
+
+\subsection{Sécurité sémantique}
+\begin{defn}
+    Soit $\l\in\N$. On pose $\M=\{0,1\}^l$. Si pour tout PPT $\A$ 
+    $$Pr(\A_{m\leftarrow\M}(1^l,Enc(k,m))=m^{(i)})\leq \frac{1}{2}+negl(l)$$
+\end{defn}
+
+\subsection{Sécurité eav}
+On regarde le jeu \textbf{Priv$_{\A,\Pi}^{eav}(\lambda)$} :
+\begin{enumerate}
+    \item $k\leftarrow \Pi.Keygen(1^lambda)$
+    \item ($m_0,m_1,\eta)\leftarrow\A_0$, le $\eta$ définit l'état/la mémoire de $\A$. (pas obligé de la mettre)
+    \item $b\leftarrow\{0,1\}$ (choix aléatoire uniforme)
+    \item $b'\leftarrow \A_1(Enc_k(m_b),\eta)$
+    \item renvoie $b==b'$.
+\end{enumerate}
+
+On peut juste écrire
+\begin{enumerate}
+    \item $k\leftarrow \Pi.Keygen(1^lambda)$
+    \item ($m_0,m_1)\leftarrow\A$ (On suppose que c'est à $\A$ de choisir les messages qu'il veut distinguer)
+    \item $b\leftarrow\{0,1\}$ (choix aléatoire uniforme)
+    \item $b'\leftarrow \A(Enc_k(m_b))$
+    \item renvoie $b==b'$.
+\end{enumerate}
+On regarde aussi le jeu \textbf{Priv$_{\A,\Pi}^{eav2}(\lambda)$} :
+\begin{enumerate}
+    \item $k\leftarrow \Pi.Keygen(1^lambda)$
+    \item ($m_0,m_1)\leftarrow\A$ 
+    \item $b^*\leftarrow \A(Enc_k(m_b))$
+    \item renvoie $b^*$.
+\end{enumerate}
+
+\begin{defn}
+    $\Pi$ est eav-securisé si pour tout PPT $\A$ : 
+    $$\lvert Pr(PrivK_{\A,\Pi}^{eav}(\lambda))-1/2\rvert=negl(\lambda)$$
+    ou
+    $$\lvert Pr(PrivK_{\A,\Pi}^{eav2}(\lambda,0))-Pr(PrivK_{\A,\Pi}^{eav2}(\lambda,1))\rvert=negl(\lambda)$$
+\end{defn}
+
+\subsection{exercice}
+Créer un modèle de sécurité pour un gestionnaire de mot de passe.
+\begin{enumerate}
+    \item Init()
+    \item Ajoute(B, id, mdp)->(B', b')
+    \item Verify(B, id, mdp)
+\end{enumerate}
+
+experience $Exp_{\Pi,\A}()$ :
+\begin{enumerate}
+    \item $\beta\leftarrow$Init()
+    \item $Q=\emptyset$
+    \item (id, mdp)$\leftarrow\A^{\Or Ajoute_{inn},\Or Acces}$(inn pour innocent)
+    \item renvoie $\Pi.Verify(\beta,id, mdp)$$\bigwedge$id$\notin Q$
+\end{enumerate}
+$\Or Acces()$ renvoie $\beta$ et $\Or Ajoute_{inn}(id)$ :
+\begin{enumerate}
+    \item mdp$\leftarrow\{0,1\}^*$
+    \item ($\beta',b')\leftarrow$ $Ajoute(\beta,id,mdp)$
+    \item $\beta=\beta'$
+    \item renvoie $b'$
+\end{enumerate}
+
+la sécurité ducoup c'est $Pr(Exp_{\Pi,\A}(1^n)=1)<negl_n$
+
+\section{Générateurs pseudos aléatoires}
+\begin{defn}
+    $l:\N\rightarrow\N$ (polynome tq $l(n)>n$).\\ On dit que $G~:~\{0,1\}^*\rightarrow\{0,1\}^*$
+    un algo DPT est un géné pseudo aléatoires si ($G(\{0,1\}^n)\subset \{0,1\}^{l(n)}$):
+    \begin{enumerate}
+        \item $\forall$ PPT $\A$, $r\in\{0,1\}^n$ uniforme, $r'\in\{0,1\}^{l(n)}$ uniforme :
+        $$\lvert Pr(\A(G(r)))- Pr(\A(r'))\rvert\leq negl_n$$
+    \end{enumerate}
+\end{defn}
+
+Exos : etant donné $G(s)$ on déf 
+\begin{enumerate}
+    \item $G'(s)=G(\overline{s})$
+    \item $G'(s)=\overline{G(s)}$
+    \item $G'(s)=G(0^{\lvert s\rvert}||s)$
+    \item $G'(s)=G(s)||G(s+1)$
+\end{enumerate}
+
+Maintenant les fonctions pseudo-aléatoires :
+\begin{defn}
+    Soit $F~:~\{0,1\}^*\times\{0,1\}^*\rightarrow\{0,1\}^*$ un DPT (meme longueur d'entrées sorties). $F$ est
+    pseudo aléatoire si $\forall~D$ : $$\lvert Pr\left(D^{F_k(.)}()=0\right)-Pr\left(D^{f()}()=0\right)\rvert=negl_n$$
+\end{defn}
+(FPA pour fonction pseudo aléatoire)
+
+On def $PrivK_{\Pi_{FPA},\A}^{CPA-alea}(\lambda, b)$ et $PrivK_{\Pi,\A}^{CPA}(\lambda, b)$ Ou le deuxieme c'est :
+\begin{enumerate}
+    \item $k\leftarrow\{0,1\}^{\lambda}$
+    \item $(m_0, m_1)\leftarrow \A^{F_k()}$
+    \item $r^*\leftarrow \{0,1\}^n$
+    \item $b^*\leftarrow\A(r^*,m_b\oplus F_k(r^*))$, $(r^*,m_b\oplus F_k(r^*))$ est directement le cipher.
+\end{enumerate}
+et le premier on remplace par une fonction aléatoire. (étant donné $r\in\{0,1\}^n$ on choisit $f(r):=r'\in\{0,1\}^n$, $2^{n2^n}$)
+
+
+Au final on écrit 
+\begin{defn}
+    Pour tout distingueur avec oracle, le distingueur peut pas distinguer la FPA d'une fonction aléatoire.
+\end{defn}
+
+\begin{defn}
+    De meme on suppose qu'on peut calculer l'inverse de la FPA. Alors F est une permutation pseudo aléatoire forte.
+\end{defn}
+
+\subsection{chiffrement par flot}
+\begin{defn}
+    Paire de DPT :\begin{enumerate}
+        \item Init(s, IV), IV est connu et s est la sécurité. Renvoie un état $\eta$.
+        \item Nextbit($\eta$) renvoie $\eta'$ et un bit $b$. 
+    \end{enumerate}
+\end{defn}
+
+Le chiffrement par flot est sécurisé? $JeuSC_{\A,\Pi}(\lambda, b)$ :
+\begin{enumerate}
+    \item Choix de la seed $s\in \{0,1\}^{\lambda}$
+    \item $IV\leftarrow \A(1^{\lambda})$
+    \item $\eta\leftarrow Init(s,IV)$
+    \item $b'\leftarrow \A^{\Or}$
+\end{enumerate}
+Ou l'oracle est soit : $\Or(): (b',\eta')\leftarrow Nextbit(\eta)$, $\eta\leftarrow\eta'$, renvoie $b'$. Soit un bit aléatoire.
+
+
+
+\section{Fonctions universelles et application}
+On definit pour chaque $\lambda\in\N$ : $h^{(\lambda)}~:~K_{\lambda}\times M_{\lambda}\rightarrow T_{\lambda}$
+avec $(T_{\lambda},+)$ un groupe. Soit $\epsilon\in [0,1]^{\N}$.
+
+\begin{defn}
+    On dit que $h=(h^{(\lambda)})$ est une fonction universelle $\epsilon-$differentiable ssi 
+    $\forall\lambda$ $\forall m_1,m_2$, $t\in M_{\lambda}^2\times T_{\lambda}$ :
+    $$Pr(h^{(\lambda)}(k,m_1)-h^{(\lambda)}(k,m_2)=t)\leq \epsilon(\lambda)$$
+    Ou la proba est prise sur $k\in K_{\lambda}$.
+\end{defn}
+
+Soit $\l\in\N$ et $(\mathbb{F}_{\lambda})_{\lambda}$ une famille de corps de grande caractéristique. On def
+$h^{(\lambda)}(k\in\mathbb{F}_{\lambda}, (m_1,...,m_{l'-1})\in\mathbb{F}_{\lambda}^{l'-1})
+=\sum_{i=1}^{l'-1}m_i k^{l'-i+1}+(l'-1)k$ avec $l'\leq l\leq car(\mathbb{F}_{\lambda})$.
+Faut mq $h$ est ($l/\lambda)$-differentiable (assez clair, d'ailleurs le ($l'-1$) est la au cas ou on a deux messages
+$(0)^{l'}$, $(0)^{l''}$ et $l'\ne l''$).\\
+
+Soit $f$ une fpa et $h$ une f-u $\epsilon-$diff avec $\epsilon=negl(\lambda)$. On pose \begin{itemize}
+    \item $\Pi_{MACuniv}(1^{\lambda}).KeyGen()$ :\begin{enumerate}
+                                                        \item $k_h\leftarrow K_{\lambda}$
+                                                        \item $k_{fpa}\leftarrow \{0,1\}^{\lambda}$
+    \end{enumerate}
+    renvoie ($k_h,k_{fpa}$).
+    \item MAC($k,m$): \begin{itemize}
+        \item $r\leftarrow \{0,1\}^{\lambda}$
+        \item renvoie $(r,h(k_h,m)\oplus f(k_{fpa}, r))$
+    \end{itemize}
+    \item $Verif_{k_h,k_{fpa}}(m,(t_1,t_2))$ : renvoie $h_{k_h}(m)\oplus f_{k_{fpa}(t_1)==t_2}$.
+\end{itemize}
+
+Jeu :
+$Inforg_{\A,\Pi_{..}}(\lambda)$:
+\begin{enumerate}
+    \item $k_f\leftarrow\{0,1\}^{\lambda}$
+    \item $k_h\leftarrow K_{lambda}$
+    \item $Q=\emptyset$
+    \item $(m^*,t^*)\leftarrow\A^{\Or_{Mac}}$
+    \item renvoie $m^*\notin Q$, $t_2^*=F_k(t_1^*)+h_k(m^*)$
+\end{enumerate}
+Avec $\Or_{Mac}(m)$:
+\begin{itemize}
+    \item $Q\leftarrow\{m\}\cup Q$
+    \item renvoie (r,$F_{k_fpa}(r)+h_{k_h}(m)$)
+\end{itemize}
+
+$Inforg_{\A}^{alea}(\lambda)$: (On peut mettre le choix de $k_h$ APRES $m\notin Q$)
+\begin{itemize}
+    \item $k_h\leftarrow K_{lambda}$
+    \item $Q=\emptyset$
+    \item $R=\emptyset$
+    \item ...
+    \item si $m^*\notin Q$
+    \item si $(t, x_t, m_2)\in R$
+    \item On renvoie $t_2^*=h_k(m^*)+x_t-h_k(m_2)$
+    \item sinon on abandonne
+\end{itemize}
+avec $\Or_{Mac}$:
+\begin{itemize}
+    \item $Q=\{m\}\cup Q$
+    \item $r\leftarrow\{0,1\}^{\lambda}$
+    \item Si $r\in R$ on annule tout
+    \item sinon $x\leftarrow \mathbb{F}_q$
+    \item $R=R\cup\{(r,x,m)\}$
+    \item renvoie $(r,x)$.
+\end{itemize}
+
+
+
+
+
+
+
+\end{document}
+
+

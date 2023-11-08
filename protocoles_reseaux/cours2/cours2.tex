@@ -1,0 +1,66 @@
+\documentclass[12pt]{article}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{hyperref, pagecolor, mdframed }
+\usepackage{graphicx, amsmath, latexsym, amsfonts, amssymb, amsthm,
+amscd, geometry, xspace, enumerate, mathtools}
+\usepackage{tikz}
+
+\theoremstyle{plain}
+\newtheorem{thm}[subsubsection]{Th\'eor\`eme}
+\newtheorem{lem}[subsubsection]{Lemme}
+
+\theoremstyle{definition}
+\newtheorem{defn}[subsubsection]{D\'efinition}
+
+\theoremstyle{remark}
+
+\newtheorem{rem}{Remarque}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=Green,
+    filecolor=RoyalPurple
+}
+
+\definecolor{wgrey}{RGB}{148, 38, 55}
+
+
+\title{Protocoles réseaux : sécurité}
+\date{30 octobre 2023}
+\begin{document}
+\maketitle
+\begin{enumerate}
+    \item Politiques de sécurité (ce que/qui je veux empecher de faire quoi)
+    \item Modèle d'attaque (ce que l'attaquant a le droit de faire)
+\end{enumerate}
+
+\noindent \textbf{Propriétés de sécurité} qui définissent les politiques de securité :
+\begin{enumerate}
+    \item confidentialité \begin{enumerate}
+        \item anonymat/"méta-données"
+        \item 
+    \end{enumerate}
+    \item authenticité
+    \item integrité
+    \item disponibilité, absence de déni. (par ex : un serveur doit être accessible)
+\end{enumerate}
+
+\noindent \textbf{Types d'authentifications}:
+\begin{enumerate}
+    \item chiffrage ad hoc, clé négociée, pas d'auth (pb de man in the middle)
+    \item TOFU "trust on first use", leap of faith
+    \item authentification certifiée (mac)
+\end{enumerate}
+
+\section{SSL/TLS et https}
+HTTP: pas de mécanisme de sécurité $\rightarrow$ \begin{itemize}
+    \item SSL$\rightarrow$ auth, chiffrage
+\end{itemize}
+
+HTTPS: HTTP+auth(du serveur)+confidentialité.
+
+
+
+
+\end{document}

@@ -1,0 +1,6 @@
+List the distributions installed, by running following in PowerShell.
+
+wsl -l
+Unregister the distribution. Replace the "Ubuntu" below with your distribution name found in Step #1:
+
+wsl --unregister Ubuntu

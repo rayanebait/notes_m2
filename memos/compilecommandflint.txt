@@ -1,0 +1,1 @@
+gcc -I/usr/local/include/flint -L/usr/local/lib -Wall -o test fmpz_mod_poly.c -lgmp -lflint

@@ -1,0 +1,25 @@
+Pour le tp3:
+    -ISR = macros, y'en a par defauts mais on peut les redefs pour chaque ADC_vect. En particulier,
+pour TIMER1_OVF_vect et ,
+    -Definitions des noms pour acceder aux registres decrites dans /usr/lib/avr/include/avr/iom328p.h*/
+
+les noms:
+    -TIFR1-Timer/Counter1 Interrupt flag register : Permet d'autoriser les interruptions
+    liées à TCNT1. OCF1A/B, TOV1.
+    -TIMSK1-Timer/Counter1 Interrupt Mask register : Permet d'activer les interruptions
+    liées à TCNT1. OCIE1B/A(compare), TOIE1(overflow).
+    -TCCR1A-Timer/Counter1 Control Register A: Permet de gérer le pin associé à OC1A/B.
+    -TCCR1B-Timer/Counter1 Control Register B: Permet de gerer les prescalers.
+    
+    
+
+Partie II :
+        (1)Global interrupt enable, sei().
+        (2)(2**8)/(16*(10**6))=16 micro secondes
+        (3)(2**8)/((16*(10**6))/1024)~16 millisecondes
+        (4)(2**16)/(16*(10**6))~4.1 millisecondes, (2**16)/((16*(10**6))/1024)~4.2 secondes
+        (5)(31250, 256)
+        (6)On a OCR1A et OCR1B, il faut 
+.
+
+    

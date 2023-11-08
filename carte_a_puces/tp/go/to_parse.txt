@@ -1,0 +1,20 @@
+begin:
+    lw $3, 0($0)
+    addi $4, $5, 100
+    bgt $3, $4, end
+    addi $3, $3, 1
+    addi $5, $10, 1
+    xor $6, $3, $4
+again:
+    addi $12, $12, 1
+    bgt $6, $12, again
+mid:
+    addi $6, $6, 4
+    bgt $6, $12, mid
+    sw $6, 1($0)
+    sw $3, 0($0)
+    sw $4, 2($0)
+    xor $4, $4, $6
+    bgt $4, $3, begin
+end:
+    sw $3, 1($0)

@@ -1,0 +1,16 @@
+"dpkg -l" liste les packages installés via dpkg
+"dpkg -l | grep [word]" liste les packages installés via dpkg contenants "word"
+"dpkg -S [word]" affiche les dossiers ou word est 
+
+utiliser "sh" devant "./configure"
+
+touch [fichier.ext] créer un fichier d'extension ext
+echo "str" ecris str 
+echo "str" > fichier.ext écrit str dans fichier 
+>fichier.ext supprime le contenu du fichier
+chmod u=rwx fichier.ext restreint l'execution du script à l'utilisateur principal ?
+
+sh fichier.sh execute les commandes ecrite dans fichier
+
+
+
