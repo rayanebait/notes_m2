@@ -1,0 +1,40 @@
+Petite description du USART. Quelques
+registres a retenir :
+                -UDR0 : Meme addresse I/O pour la lecture et l'ecriture. En realité
+                y'a deux registres si j'ai bien compris. Seulement a la lecture on accede
+                a RXB et a l'écriture a TXB.
+                -Les UCSR0 :
+                    -UCSR0A m'interesse principalement pour les flags RXC0
+                (receive complete), TXC0 (transmit complete) et UDRE0 (data register empty).
+                Mais y'a aussi des flags comme frame error ou parity error.
+                    -UCSR0B contient les flags d'interruptions et surtout TXEN0/RXEN0 les
+                    bits d'activations des receiver/transmitter. (Contient aussi de quoi gérer
+                    /activer les trames a 9 bits de données)
+                    -UCSR0C permet de determiner le format de la trame.
+                    -UBBR0L/H contient le baud rate. (sur 12 bits)(F_CPU/(16UL*baud_rate) - 1)
+
+    Guilhem Mizrahi
+    Bait Rayane
+
+Make s'utilise de la manière suivante :
+        -make PROG=exerciceN pour compiler l'exerciceN.
+        -make flash PROG=exerciceN pour flasher le programme.
+
+Le ring buffer ne marche pas une fois 100 caractères écrits. Le printf n'affiche pas le caractère voulu.
+
+Reponses aux exercices :
+
+exercice 2 : 1) Le port TXD est relié à la broche PD1, la port RXD à la broche PD0.
+             2) Ces broches font le lien avec l'autre processeur,
+              avrdude s'en sert pour flasher la mémoire.
+             7) On recoit les caractères en retard, il semble y avoir un tampon
+             de taille au plus 4.
+
+exercice 3 :
+            1)Dans le cas ou l'on utilise que N-1 éléments du tampon, head=tail lorsque
+            le buffer est vide et head=(tail+1)%N lorsque le buffer est plein.
+            
+
+
+
+    
