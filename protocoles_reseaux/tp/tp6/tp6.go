@@ -2,6 +2,7 @@ package main
 
 import (
 	"crypto/tls"
+	"encoding/binary"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -27,10 +28,10 @@ type PacketUDP struct {
 
 /*la fonction est degeu+fausse*/
 func initPacketUDP(p *PacketUDP, packet []byte) {
-	p.Id = uint32(packet[0]) + uint32(packet[1]) + uint32(packet[2]) + uint32((packet[3] & 1))
-	p.Type = packet[4] - packet[3]&1
-	p.Length = uint16(packet[5]) + uint16(packet[6])
-	p.Body = string(packet[7:])
+	p.Id = binary.BigEndian.Uint32(packet[0:4])
+	p.Type = packet[4]
+	p.Length = binary.BigEndian.Uint16(packet[5:7])
+	p.Body = string(packet[7 : 7+p.Length])
 }
 
 func main() {
@@ -55,6 +56,7 @@ func main() {
 	for _, jM := range m {
 		fmt.Println(jM.Host + ":" + strconv.FormatInt(int64(jM.Port), 10))
 	}
+
 	net.ParseIP(m[0].Host)
 
 	udpaddress := net.UDPAddr{
@@ -97,6 +99,7 @@ func main() {
 			continue
 		}
 
+		// fmt.Println(buf2)
 		var p PacketUDP
 		initPacketUDP(&p, buf2)
 
