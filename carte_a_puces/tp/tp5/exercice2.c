@@ -7,7 +7,7 @@
 // volatile char signal[35] = "=.=.=...===.===.===...=.=.=........";
 // volatile uint8_t signal_ctr = 0;
 
-ISR(TIMER1_COMPA_vect)
+ISR(TIMER0_OVF_vect)
 {
 }
 
@@ -20,14 +20,16 @@ int main(void)
     // LED setup section
     DDRD |= _BV(DDD6); // Set DDRB to 1 for the LED
 
-    // Prescaler setup section
+    /*Prescaler of the clocks*/
+    // CLKPR = _BV(CLKPCE) | _BV(CLKPS3);
+
 
     OCR0A = 0x80;        // Set Output compare to have 0.25 duty cycle
 
-    TCCR0A = _BV(WGM01) | _BV(WGM00);  // Set the mode to Fast PWM
-    TCCR0B = _BV(WGM02) | _BV(CS01) | _BV(CS00);//
+    TCCR0A = _BV(WGM01) | _BV(WGM00) | _BV(COM0A1) ;  // Set the mode to Fast PWM
+    TCCR0B =  _BV(CS02);//Activate the clock with 256 Prescaler
 
-    TIMSK0 |= _BV(OCIE0A); // Set the interrupt mode to Match Compare A
+    TIMSK0 |= _BV(TOV0); // Set the interrupt mode to Match Compare A
 
     TCNT0 = 0; // Reset timer before starting the loop for consistent delays
 
