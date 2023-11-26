@@ -34,11 +34,9 @@ int main(void){
 
     while(1){
         sleep_mode();
-        printf("%s, %c",rb.buffer, rb.buffer[rb.head]);
-        if(rb.head - rb.head == 3){
-            char str[LEN_BUF];
-            /*devrait flush le ring buffer a partir de head jusqu'a tail?*/
-            gets(str);
-        }
+        char str[LEN_BUF];
+        gets(str);
+        printf("Caractère entré:%s, %s",str, rb.buffer+rb.head);
+        /*devrait flush le ring buffer a partir de head jusqu'a tail?*/
     }
 }

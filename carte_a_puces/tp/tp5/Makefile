@@ -33,10 +33,11 @@ LFU = 0xFF
 HFU = 0xDE
 EFU = 0x05
 # program source files (not including external libraries)
-SRC = $(PROG).c 
+EXT = ../include/
+SRC = $(PROG).c $(patsubst $(EXT)%.h, ../src/%.c, $(wildcard $(EXT)*))
+
 # where to look for external libraries (consisting of .c/.cpp files and .h files)
 # e.g. EXT = ../../EyeToSee ../../YouSART
-EXT = 
 
 
 #################################################################################################

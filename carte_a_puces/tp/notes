@@ -1,7 +1,0 @@
-usbipd wsl list     dans cmd pour avoir la liste des ports auxquels wsl a acces
-usbipd wsl attach --busid=...    dans cmd pour attacher un port a wsl
-lsusb       dans wsl pour afficher la liste dans ports accessibles dans wsl
-
-sur la machine virtuelle : connexion ssh (sur un terminal host): ssh -X evar1@192.168.56.102 (le -X pour autoriser le X11 forwarding, etapes en plus a cause de virtual box)
-dans /dev/, acces a l'usb via /dev/ttyACM0 (peut etre ACM1) aussi. Parfois faut ajouter des permissions, sudo chmod a+rw /dev/ttyACM0
-

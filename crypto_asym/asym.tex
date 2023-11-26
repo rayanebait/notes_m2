@@ -356,4 +356,38 @@ Securité dépend du groupe dans lequel on travaille : Si on prend $G=(\Z/p\Z,+)
 \end{itemize}
 
 
+
+\section{IGC(infrastucture de gestion de clefs)}
+
+Gère les distributions de certificats.
+
+\subsection{Création d'un certificat num}
+2 modes:
+\begin{itemize}
+    \item Decentralisé: l'utilisateur crée son bi-clef
+    \item Centralisé: L'autorité de confiance crée le bi-clef
+\end{itemize}
+
+\subsection{Révocation d'un certificat num}
+\begin{itemize}
+    \item Fin de limite de validité
+    \item Révoque avant la date limite(par exemple 
+    si oubli du mot de passe)
+\end{itemize}
+
+\subsection{Types de certificats}
+\begin{itemize}
+    \item Signature
+    \item Chiffrement et signature
+\subsection{Reste}
+L'IGC est composée de $4$ entités obligatoires:
+\begin{itemize}
+    \item Autorité de confiance: signe les certifs
+    \item Autorité d'enregistrement:s'assure de l'identité
+    du demandeur de certifs.
+    \item Autorité de dépôt: stocke les certifs et liste
+    de révocations
+    \item Entité finale: celle qui demande le certif
+\end{itemize}
+Optionnellement: Autorité de sequestre, conserve les clefs privées
 \end{document}
