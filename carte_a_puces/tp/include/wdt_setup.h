@@ -5,4 +5,5 @@
 
 void WDT_timeout_setup(uint8_t prescaler);
 
+void WDT_stop(void);
 #endif

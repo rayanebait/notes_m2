@@ -47,6 +47,14 @@ func main() {
 	if err != nil {
 		log.Fatal("Get", err)
 	}
+	// for r == nil {
+	// 	r, err = client.Get("https://jch.irif.fr:8443/udp-addresses.json")
+	// 	if err != nil {
+	// 		log.Fatal("Get", err)
+	// 	}
+	// 	fmt.Println("retrying")
+	// 	time.Sleep(1000000000)
+	// }
 
 	var m []jsonAddressUDP
 

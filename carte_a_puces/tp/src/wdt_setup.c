@@ -42,3 +42,13 @@ void WDT_timeout_setup(uint8_t prescaler){
         WDTCSR = _BV(WDIE) | (prescaler);
     }
 }
+
+void WDT_stop(void){
+    if(MCUSR & _BV(WDRF)){            // If a reset was caused by the Watchdog Timer...
+        MCUSR &= ~_BV(WDRF);                 // Clear the WDT reset flag
+        WDTCSR |= (_BV(WDCE) | _BV(WDE));   // Enable the WD Change Bit
+        WDTCSR = 0x00;                      // Disable the WDT
+    }
+
+    WDTCSR = 0x00;
+}

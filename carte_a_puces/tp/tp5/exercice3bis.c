@@ -9,49 +9,22 @@
 #include "uart.h"
 
 
-ISR(WDT_vect){
+// ISR(WDT_vect){
+//     PORTD ^= _BV(PORTD5);
+// }
+
+ISR(PCINT0_vect){
+    if(!WDTCSR){
+        WDT_stop()
+    }
+    else{
+        ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
+            WDT_timeout_setup(4);
+        }
+    }
     PORTD ^= _BV(PORTD5);
 }
 
-
-
-typedef struct{
-    uint8_t state;
-    uint8_t counter;
-    uint8_t is_pushed;
-}button;
-
-typedef button button_t[1];
-
-button_t b;
-
-void debounce(button_t B){
-    /*Read if PB5 has high or low logical state*/
-    ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
-        /*Reading PIN is doable independently
-        of DDR and PORT value*/
-        uint8_t curr_button_state = (PINB >> PINB5) & 1;
-
-        // printf("%d",curr_button_state);
-
-        if(curr_button_state != B->state){
-            B->counter++;
-            if(B->counter >=4){
-
-                B->state = curr_button_state;
-                printf("%d",B->state);
-                B->counter = 0;
-
-                /*Low logical state -> button is pushed*/
-                if(B->state == 0){
-                    B->is_pushed = 1;
-                }
-            }
-        } else {
-            B->counter = 0;
-        }
-    }
-}
 
 void setup_config(){
     set_sleep_mode(SLEEP_MODE_IDLE); // Set the sleep mode to IDLE to keep the Timer1 running

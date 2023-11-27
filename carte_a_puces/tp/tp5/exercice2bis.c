@@ -5,8 +5,21 @@
 #include <avr/sleep.h>
 #include <stdio.h>
 
+#include "timer0_setup.h"
+#include "adc_setup.h"
+
 ISR(ADC_vect){
     OCR0A = ADCH;
+}
+
+ISR(TIMER1_COMPA_vect){
+
+
+}
+
+void setup_config(){
+    timer
+
 }
 
 int main(void){

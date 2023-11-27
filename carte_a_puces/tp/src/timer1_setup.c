@@ -15,7 +15,24 @@ void Write_Timer1( unsigned int i )
     }
 }
 
+uint16_t Read_Timer1( void ){
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
+        unsigned int i;
+        /* Read TCNT1 into i */
+        i = TCNT1;
+    }
+    return i;
+}
+
 void Timer1_overflow_setup(uint8_t prescaler){
+
+    TIMSK1 = (1<<TOIE1);
+
+    /*Prescaler of 1<<2*prescaler*/
+    TCCR1B = (1<<prescaler);
+}
+
+void Timer1_CTCA_setup(uint8_t prescaler){
 
     TIMSK1 = (1<<TOIE1);
 
