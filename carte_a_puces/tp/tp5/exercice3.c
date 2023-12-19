@@ -25,6 +25,7 @@ typedef button button_t[1];
 
 button_t b;
 
+
 void debounce(button_t B){
     /*Read if PB5 has high or low logical state*/
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE){

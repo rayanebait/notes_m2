@@ -8,6 +8,7 @@ amscd, geometry, xspace, enumerate, mathtools}
 \theoremstyle{plain}
 \newtheorem{thm}[subsubsection]{Th\'eor\`eme}
 \newtheorem{lem}[subsubsection]{Lemme}
+\newtheorem{cor}[subsubsection]{Corollaire}
 
 \theoremstyle{definition}
 \newtheorem{defn}[subsubsection]{Definition}
@@ -156,6 +157,7 @@ On écrit ducoup $f(n)=f(\prod p_i^{\alpha_i})$ et $f(p^{\alpha})=\sum_{k<\alpha
     $p\ne q$ deux nombres premiers et $n=pq$. On retrouve $p,q$ en $O(log^3(n))$ avec $n,\phi(n)$.
 \end{prop}
 
+\newpage
 \section{corps finis}
 $q=p^d$
 \begin{prop}
@@ -356,7 +358,7 @@ Securité dépend du groupe dans lequel on travaille : Si on prend $G=(\Z/p\Z,+)
 \end{itemize}
 
 
-
+\newpage
 \section{IGC(infrastucture de gestion de clefs)}
 
 Gère les distributions de certificats.
@@ -379,6 +381,7 @@ Gère les distributions de certificats.
 \begin{itemize}
     \item Signature
     \item Chiffrement et signature
+\end{itemize}
 \subsection{Reste}
 L'IGC est composée de $4$ entités obligatoires:
 \begin{itemize}
@@ -390,4 +393,325 @@ L'IGC est composée de $4$ entités obligatoires:
     \item Entité finale: celle qui demande le certif
 \end{itemize}
 Optionnellement: Autorité de sequestre, conserve les clefs privées
+
+\newpage
+\section{Attaque sur log discret}
+
+Dans un groupe cyclique $G=<g>$. On cherche 
+étant donnés $h:=g^x$ à trouver $x$.
+
+\begin{thm}[Shoup, 1997]
+    Dans un groupe générique d'ordre \(p\) premier, 
+    le calcul d'un log discret est au minimum en 
+    $\Or(\sqrt{p})$.
+\end{thm}
+
+\subsection{Baby step, Giant step!}
+\textbf{Idée:} Déterminer $s$ et $i$ tq $x=st+i$ où $t$
+est choisi et $0\leq i<t$, i.e. \[h*(g^{-t})^s=g^i\]
+
+\textbf{Pré-calcul:($\Or(t)$ étapes)} Calcul de tous les
+ $g^i$ pour $0\leq i\leq t-1$ et $g^{-t}$.  (plus table
+  de hashage des $g^i$)\\
+
+\textbf{Calcul:($\Or(p/t)$ étapes)} Pour $s$ allant de
+$0$ à $n/t$, on calcule $h*(g^{-t})^s$ et on teste
+si $\exists i$ tq $h*(g^{-1})^s=g^i$. \qed
+\newline
+
+On prend $t=\sqrt{p}$ et on a la borne de Shoup.\\
+
+\subsection{Algorithme Rho-Pollard}
+\textbf{Idée: }Balade aléatoire dans $G$ en attendant
+ une collision (d'ou la lettre $\rho$).\\
+
+Il nous faut une fonction pseudo-aléatoire tq si 
+$\alpha_i$ et $\beta_i$ sont tq 
+    \[g_i=g^{\alpha_i} h^{\beta_i}\]
+On puisse déterminer $\alpha_{i+1},\beta_{i+1}$ tq 
+$F(g_i)=g_{i+1}=g^{\alpha_{i+1}}h^{\beta_{i+1}}$. 
+Si on a une collision i.e. $g_i=g_j$ alors 
+    \[g^{\alpha_i+x\beta_i}=g^{\alpha_j+x\beta_j}\]
+
+\noindent D'ou $\alpha_i+x\beta_i\equiv \alpha_j+x\beta_j \mod n=
+\lvert g\rvert$. Donc si $pgcd((\beta_i-\beta_j),n)=1$
+alors \[x\equiv (\alpha_j-\alpha_i)(\beta_i-\beta_j)^{-1}
+\mod n\].
+
+\noindent \textbf{Algorithme:} On calcule la suite 
+$(\alpha_i,\beta_i)$ avec $F$ et a chaque étape 
+on regarde si y'a une collision.\\
+
+\newpage
+\noindent \textbf{Complexité:} Petite digression sur le 
+\begin{center}
+    Paradoxe des Anniversaires.
+\end{center}
+On regarde un tirage aléatoire uniforme sur $n$ boules 
+avec remise. On cherche $P(n,k)$ la probabilité 
+qu'après $k$-tirages on ait tiré au moins deux fois une 
+meme boule: On regarde \[1-P(n,k)=\frac{n(n-1)\ldots
+(n-(k-1))}{n^k}=\prod_{i=1}^{k-1}{1-i/n} \]
+
+\noindent Or pour tout $x$ réel, $1+x\leq e^x$. D'ou 
+    \[1-P(n,k)\leq \prod e^{-i/n}=e^{\sum (-i/n)}
+    =e^{k(k-1)/2n}\]
+On cherche quand $1-P(n,k)\geq 1/2$:
+    \[e^{-(k(k-1))/2n}\leq 1/2\]
+
+\noindent Donne $k(k-1)/2n\geq \ln(2)$, d'ou $k\geq
+\sqrt{n}\sqrt{2 \ln(2)}$. Donc si on prend ce $k$ on a 
+    \[P(n,k)\geq 1/2\]
+(wow!).\\
+
+\noindent \textbf{Retour à la complexité:} $\Or(\sqrt{n})$
+en temps mais $\Or(\sqrt{n})$-mémoire..  Mais il existe 
+une version sans mémoire de même complexité!
+
+\subsection{Réduction de Pohlig-Hellman}
+\textbf{Idée:} Au lieu de calculer un unique log discret 
+dans un grand groupe on calcule plusieurs logs discrets 
+dans des groupes plus petits. On suppose que $n=\prod p_i
+^{\alpha_i}$ est composé $\rightarrow$ lemme chinois.
+Plusieurs paramètres:
+\begin{center}
+    On pose $n_i=\frac{n}{p_i^{\alpha_i}}$, $g_i=g^{n_i}$ alors:
+    \[\lvert g_i\rvert = p_i^{\alpha_i}\]
+    Puis $h_i=h^{n_i}=(g^x)^{n_i}=g_i^x$
+\end{center}
+
+\noindent Et $x$ est determiné $\mod p_i^{\alpha_i}$. \\
+
+\noindent \textbf{Algorithme mod $p^\alpha$:} 
+On pose $x=\sum_{i=0}^{\alpha_i-1} x_ip^i$ et on le fait 
+de proche en proche, $h^{p^{\alpha-1}}=(g^{x})^{p^{\alpha-1}}$.
+Alors\\
+\begin{center}
+    Déterminer $x_0$ c'est déterminer le log discret 
+    de $h^{p^{\alpha-1}}\mod p$.
+\end{center}
+\noindent Maintenant étant donnés $x_0,\ldots, x_{e-1}$ on calcule 
+$x_e$, on fait comme pour shanks tonelli, i.e.
+
+    \[h_{e-1}^{p^{\alpha-(e+1)}}=(g^{p^{\alpha-1}})^{x_e}\]
+
+\textbf{Complexité totale (selon Shoup):} $\Or(rlog^)$
+
+
+\section{Tests de primalité}
+Plusieurs types: 
+\begin{enumerate}
+    \item test de composition
+    \item test de primalité
+    \item (Cribles)
+\end{enumerate}
+
+On considère tjr un entier impair(obvious). Et le test 
+naif ou on teste tout les entiers plus petits: $\Or(\sqrt{n}\log^2(n))$
+
+\subsection{Tests probabilistes}
+\indent \textbf{Test de Fermat:} On test si 
+$a^{n-1}\equiv1\mod n$ pour pleins d$'a$.
+\begin{defn}
+    On prend $b\in(\Z/n\Z)^{\times}$. Si $b^{n-1}\equiv1
+    \mod n$ alors $n$ est dit pseudo-premier en base $b$.
+\end{defn}
+
+\begin{prop} eq\\
+    \begin{itemize}
+        \item[(i)] $n$ est p.p en base $b$ ssi $\lvert 
+        b\rvert\mid n-1$
+        \item[(ii)] Si $n$ est p.p en base $b_1$ et $b_2$
+        alors $n$ est pp en base $b_1b_2$
+        \item[(iii)]Si $\exists c\in (\Z/n\Z)^{\times}$ tq 
+       $c^{n-1}\neq 1\mod n$, alors il ya au moins autant
+       de bases pour lesquelles $n$ n'est pas pp que 
+       de bases pour lesquelles il l'es.
+    \end{itemize}
+\end{prop}
+\textbf{Démo: (iii)} Etant donné $B=\{b|b^{n-1}\equiv 1
+\mod n\}$. Supposons qu'on a ce $c$, on pose $C=cB$. On a 
+$\#C=\#B$. Mtn si $cb\in B$ alors par (ii) $c\in B$. Pas 
+possible.\qed\\
+
+\newpage
+\textbf{Algo:} On itère $k$ fois
+
+\begin{itemize}
+    \item on tire aléatoirement $b$.
+    \item On teste si $b$ est premier à $n$.
+    \item Si oui on teste si $b^{n-1}\equiv 1\mod n$.
+    \begin{itemize}
+        \item[Non] $n$ est composé.
+        \item[Oui] On change de $b$.
+    \end{itemize}
+\end{itemize}
+Si après $k$ tirages, l'algo n'indique que $n$ est pas composé 
+alors il est premier avec une proba $\geq 1-\frac{1}{2^k}$
+à la condition qu'il existe un $c$ vérifiant (iii).\\
+
+\textbf{Complexité}: \(\Or(k\log^3 n)\).
+\begin{defn}
+    Les entiers de Carmichael sont ceux qui vérifient 
+    Fermat en étant composé impairs. 
+\end{defn}
+\noindent\begin{prop}
+    \begin{itemize}(eq)
+        \item[(i)]Si $n$ contient un facteur carré 
+        alors $n$ n'est pas de Carmichael.
+        \item[(ii)]Si $n$ est sans facteurs carré,
+        $n$ est de Carmichael ssi $\forall p\mid n$
+        \[(p-1)\mid (n-1)\]
+    \end{itemize}
+\end{prop}
+
+\textbf{Proof: (i)}
+Avec \(<g>=(\Z/p^2\Z)^{\times}\) et 
+\begin{itemize}
+    \item $b\equiv g \mod p^r$
+    \item $b\equiv 1\mod n/p^r$
+\end{itemize}
+
+D'ou $p(p-1)\mid n-1$ et comme $n-1\equiv 1\mod p$.\qed
+
+\begin{thm}[Alford, Pomerance et Granville]
+    Il y'a une infinité de nombres de Carmichael. (par 
+    exemple \(561=3*11*17\))
+\end{thm}
+\newpage
+\textbf{Test de Solovay-Strassen}:
+\begin{prop}
+    Si $\forall b\in(\Z/n\Z)^{\times}$, on a 
+    \[\left(\frac{b}{n}\right)=b^{\frac{n-1}{2}}\]
+    Alors $n$ est premier.
+\end{prop}
+\begin{lem}
+    Si $n$ est composé impair, alors pour au moins 
+    la moitié des $b\in(\Z/n\Z)^{\times}$,
+    \[\left(\frac{b}{n}\right)\neq b^{\frac{n-1}{2}}\]
+\end{lem}
+\noindent \textbf{Démo:} Même argument que pour Fermat. Y faut 
+juste avoir un \(c\) comme dans l'énoncé. On le cherche
+\begin{itemize}
+    \item[Cas ou $p^2\mid n$:] On pose $c=1+\frac{n}{p}$.
+On a $\left(\frac{c}{n}\right)=\left(\frac{c}{n}\right)^2\times
+\left(\frac{c}{\frac{n}{p^2}}\right)=1.1=1$.
+ Puis $c^j=(1+\frac{n}{p})^j=1+j.\frac{n}{p}\mod n$ d'ou 
+ $c^j=1\mod n$ ssi $j\equiv 0\mod p$. Maintenant 
+ $\frac{n-1}{2}\equiv 0\mod p$ ssi $n-1\equiv0\mod p$ qui 
+ est pas possible.
+    \item[Cas ou $n=\prod p_i$:] On prend $c_0$ un résidu
+non quadratique pour $p_0$ et $c_1\equiv 1\mod n/p_0$. 
+On prend $c$ tel que $c\equiv c_0\mod p_0$ et 
+$c\equiv c_1\mod \frac{n}{p_0}$. Maintenant en utilisant 
+$\left(\frac{c}{n}\right)=\left(\frac{c_0}{p_0}\right)
+\times\left(\frac{c_1}{n/p_0}\right)$ on prouve que le 
+$c$ est bien comme on veut.
+\end{itemize}
+
+\noindent\textbf{Algo de Solovay-Strassen:} On itère $k$ fois.
+\begin{itemize}
+    \item On tire aléatoirement $b\in[2,n-1]$
+    \item On teste si $b$ et $n$ sont premiers entre eux 
+    \begin{itemize}
+        \item[Non] $n$ est composé
+        \item[Oui] On teste si $\left(\frac{b}{n}\right)
+        =b^{\frac{n-1}{2}}\mod n$
+        \begin{itemize}
+            \item[Non] $n$ est composé.
+            \item[Oui] On change de $b$.
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+Après $k$ passages avec succès, $n$ est premier avec 
+une proba $\geq 1-\frac{1}{2^k}$.\\
+
+\textbf{Complexité}: $\Or(k\log^3n)$.
+\newpage 
+\textbf{Test de Miller-Rabin:} l'idée est que si 
+$n\ne p^{\alpha}$ est composé alors $n$ a plus de $2$ racines 
+carrées.
+
+\begin{defn}
+    On pose $s=v_2(n-1)$ et $t=n/2^s$. Soit $b\in(\Z/n\Z)^\times$.
+    \\\indent Si $b^t\equiv 1\mod n$ ou $\exists 0\leq r<n-1$ tq 
+    $(b^t)^{2^r}\equiv -1\mod n$ alors on dit que $n$ 
+    est pp fort en base $b$.
+\end{defn}
+\begin{lem}[$n$ un entier impair composé]
+    Pour au plus $1/4$ des élts de $(\Z/n\Z)^{\times}$,
+    $n$ est pp fort.
+\end{lem}
+\textbf{Algo de Miller-Rabin:} On itère $k$ fois,
+\begin{itemize}
+    \item On tire aléatoirement $n\in[2,n-2]$.
+    \item On test si $b$ est premier à $n$.
+    \begin{itemize}
+        \item[Non] $n$ est composé.
+        \item[Oui] On regarde si $b^t\equiv\pm1\mod n$.
+        \begin{itemize}
+            \item[Si oui:] On change de $b$
+            \item[Sinon:] On calcule les $(b^t)^{2^r}\mod n$
+            \begin{itemize}
+                \item[Un]$-1$: On change de $n$
+                \item[Pas de]$-1$: $n$ est composé
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+Après $k$ tirages avec succès, $n$ est premier avec une 
+proba $\geq 1-\frac{1}{4^k}$.\\
+\indent \textbf{Complexité:} $\Or(k\log^3n)$.
+
+\subsection{Test de primalité assurée}
+\textbf{Test $n-1$ de Pocklington-Lehman:}On considère 
+$n$ impair.
+\begin{prop}
+    Soit $p\mid n-1$. Si on a un $a\in\Z$ tq:
+    \[a^{n-1}\equiv 1\mod n\]    
+    et ($a^{\frac{n-1}{p}}-1$) est premier à $n-1$.
+    Alors pour tout diviseur $d$ de $n$, \[d\equiv1\mod 
+    p^{\alpha}\] où $p^{\alpha}\mid n-1$.
+\end{prop}
+\indent \textbf{Démo:} Soit $d\mid n$ premier et $a$ comme dans 
+l'énoncé. On a $a^{n-1}\equiv1\mod f$. Et $a^{\frac{n-1}{p}}
+\neq 1\mod d$. On note $e_d=\lvert a\rvert$ mod $d$. Donc $e_d\mid n-1$
+et $e_d\nmid (n-1)/p$. Si $p^{\alpha}\mid n-1$ alors $p^{alpha}
+\mid e_d$. En plus $a^{d-1}\equiv 1\mod d$ d'ou $e_d\mid d-1$.
+Puis $p^{\alpha}\mid e_d$ et $d\equiv 1\mod p^{\alpha}$.qed
+
+\begin{cor}
+    Soit $n$ un entier tq $n-1=f.u$ avec $f\geq\sqrt{n}$,
+    $f$ complètement factorisé et $f$ premier à $u$. 
+    Supposons que $\forall p\mid f$, $\exists a$ comme 
+    dans la prop précedente. Alors $n$ est premier et 
+    inversement.
+\end{cor}
+\textbf{Démo:} Supposons que $\forall p\mid f$, il existe 
+un $a$ comme dans l'énoncé. D'après la prop, $\forall p\mid f$,
+$\forall d\mid n$ on a $d\equiv1\mod p^{\alpha}$. D'ou 
+par le lemme chinois $d\equiv 1\mod f$. Supposons que 
+$d=1+kf\neq 1$. Alors $n$ n'a pas de diviseur $\neq1\leq 
+\sqrt{n}$ donc $n$ est premier. Inversement, si 
+$n$ est premier, on prend un générateur $a$ de $\F_n^*$.
+
+\subsection{L'algorithme AKS}
+\textbf{AKS pour Aggraval, Kayal et Sapena. Idée:} $n$ 
+est premier ssi $(X+a)^n=X^n+a\mod n$. (On va regarder 
+modulo un polynome)\\
+\indent \textbf{Algo AKS:} On évince le cas ou $n=m^b$ et $b\ne1$.
+\begin{itemize}
+    \item On pose $r$ minimal tel que $\Or_r(n)\geq 4
+    \log^2n$ avec ($\Or_r(n)$ l'ordre de $n$ dans $(\Z/r\Z)^{\times}$)
+    \item Si $\exists1\leq a\leq r$ tq $1<a\wedge n<n$. Alors 
+    $n$ est composé.
+    \item Si $n\leq r$, $n$ est premier.
+    \item Pour $1\leq a\leq [2\sqrt{\phi(r)}\log n]$,
+    on teste si $(X+a)^n\neq X^n+a\mod (n, X^r-1)\implies$
+    $n$ est composé. Sinon $n$ est premier.
+\end{itemize}
+
+\textbf{Complexité:} $\Or(\log^{10,5}(n))$.
+
+
 \end{document}

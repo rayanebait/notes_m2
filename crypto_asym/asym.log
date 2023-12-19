@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.11.13)  21 NOV 2023 14:31
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.11.13)  12 DEC 2023 15:53
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**/home/splash/Desktop/notes_m2/crypto_asym/asym.tex
-(/home/splash/Desktop/notes_m2/crypto_asym/asym.tex
+**/home/splash/files/notes_m2/crypto_asym/asym.tex
+(/home/splash/files/notes_m2/crypto_asym/asym.tex
 LaTeX2e <2021-11-15> patch level 1
 L3 programming layer <2022-01-21> (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2021/10/04 v1.4n Standard LaTeX document class
@@ -615,28 +615,28 @@ File: pgfmodulematrix.code.tex 2021/05/15 v3.1.9a (3.1.9a)
  (/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarytopaths.code.tex
 File: tikzlibrarytopaths.code.tex 2021/05/15 v3.1.9a (3.1.9a)
 )))
-Package hyperref Info: Option `colorlinks' set `true' on input line 43.
+Package hyperref Info: Option `colorlinks' set `true' on input line 44.
  (./asym.aux)
 \openout1 = `asym.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 49.
-LaTeX Font Info:    ... okay on input line 49.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 49.
-LaTeX Font Info:    ... okay on input line 49.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 49.
-LaTeX Font Info:    ... okay on input line 49.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 49.
-LaTeX Font Info:    ... okay on input line 49.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 49.
-LaTeX Font Info:    ... okay on input line 49.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 49.
-LaTeX Font Info:    ... okay on input line 49.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 49.
-LaTeX Font Info:    ... okay on input line 49.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 49.
-LaTeX Font Info:    ... okay on input line 49.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 49.
-LaTeX Font Info:    ... okay on input line 49.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 50.
+LaTeX Font Info:    ... okay on input line 50.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 50.
+LaTeX Font Info:    ... okay on input line 50.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 50.
+LaTeX Font Info:    ... okay on input line 50.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 50.
+LaTeX Font Info:    ... okay on input line 50.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 50.
+LaTeX Font Info:    ... okay on input line 50.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 50.
+LaTeX Font Info:    ... okay on input line 50.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 50.
+LaTeX Font Info:    ... okay on input line 50.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 50.
+LaTeX Font Info:    ... okay on input line 50.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 50.
+LaTeX Font Info:    ... okay on input line 50.
  (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count319
@@ -656,7 +656,7 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 48
  (/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 ))
-Package hyperref Info: Link coloring ON on input line 49.
+Package hyperref Info: Link coloring ON on input line 50.
  (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2021-04-02 v2.47 Cross-referencing by name of section
  (/usr/share/texlive/texmf-dist/tex/latex/refcount/refcount.sty
@@ -666,9 +666,10 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
 \c@section@level=\count325
 )
-LaTeX Info: Redefining \ref on input line 49.
-LaTeX Info: Redefining \pageref on input line 49.
-LaTeX Info: Redefining \nameref on input line 49.
+LaTeX Info: Redefining \ref on input line 50.
+LaTeX Info: Redefining \pageref on input line 50.
+LaTeX Info: Redefining \nameref on input line 50.
+ (./asym.out) (./asym.out)
 \@outlinefile=\write4
 \openout4 = `asym.out'.
 
@@ -707,15 +708,15 @@ LaTeX Info: Redefining \nameref on input line 49.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-LaTeX Font Info:    Trying to load font information for U+lasy on input line 53.
+LaTeX Font Info:    Trying to load font information for U+lasy on input line 54.
 (/usr/share/texlive/texmf-dist/tex/latex/base/ulasy.fd
 File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
 )
-LaTeX Font Info:    Trying to load font information for U+msa on input line 53.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 54.
  (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 53.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 54.
  (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
@@ -723,93 +724,129 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 LaTeX Warning: No \author given.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 69--70
+Underfull \hbox (badness 10000) in paragraph at lines 70--71
 
  []
 
 [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-Underfull \hbox (badness 10000) in paragraph at lines 85--87
+Underfull \hbox (badness 10000) in paragraph at lines 86--88
 
  []
 
-[2]
-Overfull \hbox (1.01782pt too wide) in paragraph at lines 163--164
+[2] [3]
+Overfull \hbox (1.01782pt too wide) in paragraph at lines 165--166
 []\OT1/cmr/m/n/12 Complexit^^Se de l'addition/soustraction dans $\U/msb/m/n/12 F[]$ \OT1/cmr/m/n/12 : $\OML/cmm/m/it/12 O\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 log\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 q\OT1/cmr/m/n/12 ))$ 
  []
 
-[3] [4]
-Underfull \hbox (badness 10000) in paragraph at lines 224--237
+[4]
+Underfull \hbox (badness 10000) in paragraph at lines 226--239
 
  []
 
 
-Overfull \hbox (49.23946pt too wide) in paragraph at lines 224--237
+Overfull \hbox (49.23946pt too wide) in paragraph at lines 226--239
 [] 
  []
 
 [5]
-Underfull \hbox (badness 10000) in paragraph at lines 238--239
+Underfull \hbox (badness 10000) in paragraph at lines 240--241
 
  []
 
 [6]
-Underfull \hbox (badness 10000) in paragraph at lines 305--307
+Underfull \hbox (badness 10000) in paragraph at lines 307--309
 
  []
 
 [7]
-Underfull \hbox (badness 10000) in paragraph at lines 312--314
+Underfull \hbox (badness 10000) in paragraph at lines 314--316
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 319--330
+Underfull \hbox (badness 10000) in paragraph at lines 321--332
 
  []
 
 [8] [9] [10]
+Underfull \hbox (badness 10000) in paragraph at lines 413--416
 
-/home/splash/Desktop/notes_m2/crypto_asym/asym.tex:393: LaTeX Error: \begin{itemize} on input line 379 ended by \end{document}.
+ []
 
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.393 \end{document}
-                    
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
 
-(./asym.aux)
+Underfull \hbox (badness 10000) in paragraph at lines 417--421
 
-Package rerunfilecheck Warning: File `asym.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
+ []
 
-Package rerunfilecheck Info: Checksums for `asym.out':
-(rerunfilecheck)             Before: <no file>
-(rerunfilecheck)             After:  0F0C447C0B10CAE5B18C18DEBD130A24;2920.
- )
-(\end occurred inside a group at level 1)
 
-### semi simple group (level 1) entered at line 379 (\begingroup)
-### bottom level 
+Underfull \hbox (badness 10000) in paragraph at lines 422--423
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 425--427
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 441--444
+
+ []
+
+[11]
+Underfull \hbox (badness 10000) in paragraph at lines 464--466
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 483--484
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 485--489
+
+ []
+
+[12]
+Underfull \hbox (badness 10000) in paragraph at lines 520--521
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 532--536
+
+ []
+
+[13]
+Underfull \hbox (badness 10000) in paragraph at lines 549--552
+
+ []
+
+[14]
+Underfull \hbox (badness 10000) in paragraph at lines 626--628
+
+ []
+
+[15] [16] [17] (./asym.aux)
+Package rerunfilecheck Info: File `asym.out' has not changed.
+(rerunfilecheck)             Checksum: 9691CFE5752532A82186AD89CDC4446E;4276.
+ ) 
 Here is how much of TeX's memory you used:
- 22675 strings out of 480171
- 421459 string characters out of 5894488
- 701107 words of memory out of 5000000
- 40157 multiletter control sequences out of 15000+600000
+ 22740 strings out of 480171
+ 422290 string characters out of 5894488
+ 701401 words of memory out of 5000000
+ 40188 multiletter control sequences out of 15000+600000
  479342 words of font info for 70 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
- 84i,9n,80p,565b,493s stack positions out of 5000i,500n,10000p,200000b,80000s
- </home/splash/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1200.600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on asym.pdf (10 pages, 180578 bytes).
+ 84i,9n,80p,563b,428s stack positions out of 5000i,500n,10000p,200000b,80000s
+ </home/splash/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1200.600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on asym.pdf (17 pages, 220723 bytes).
 PDF statistics:
- 203 PDF objects out of 1000 (max. 8388607)
- 160 compressed objects within 2 object streams
- 69 named destinations out of 1000 (max. 500000)
- 13 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 343 PDF objects out of 1000 (max. 8388607)
+ 290 compressed objects within 3 object streams
+ 99 named destinations out of 1000 (max. 500000)
+ 213 words of extra memory for PDF output out of 10000 (max. 10000000)
 

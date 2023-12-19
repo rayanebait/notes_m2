@@ -6,13 +6,15 @@
 #include "uart.h"
 #include "ring_buffer.h"
 
-#define RX_BUFFER_SIZE 8
+#define RX_BUFFER_SIZE 32
 
 int UART__putchar(char, FILE*);
 int UART__getchar(FILE*);
 
 uint8_t rx_raw_buffer[RX_BUFFER_SIZE];
 struct ring_buffer rx_buffer;
+char UART_receive_buffer;
+
 static FILE mystdout = FDEV_SETUP_STREAM(UART__putchar, NULL, _FDEV_SETUP_WRITE);
 static FILE mystdin = FDEV_SETUP_STREAM(NULL, UART__getchar, _FDEV_SETUP_READ);
 
@@ -33,9 +35,13 @@ UART__init(uint32_t baud_rate)
 }
 
 ISR(USART_RX_vect) {
-    ring_buffer__push(&rx_buffer, UDR0);
+    UART_receive_buffer = UDR0;
+    if(UART_receive_buffer == '\r'){
+        ring_buffer__push(&rx_buffer, '\n');
+    } else {
+        ring_buffer__push(&rx_buffer, UART_receive_buffer);
+    }
 }
-
 
 int UART__putchar(char c, FILE* _stream) {
     loop_until_bit_is_set(UCSR0A, UDRE0);

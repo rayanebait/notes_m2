@@ -37,6 +37,7 @@ amscd, geometry, xspace, enumerate, mathtools}
 \newcommand{\M}{\mathcal{M}}
 \newcommand{\A}{\mathcal{A}}
 \newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\Or}{\mathcal{O}}
 \newcommand{\gr}{\color{Sepia}}
@@ -381,9 +382,79 @@ avec $\Or_{Mac}$:
 \end{itemize}
 
 
+\newpage
+\section{Fonctions de Hashage}
 
+\begin{defn}
+    Etant donné $n\in\N$ on définit un couple:
+    \begin{enumerate}
+        \item ($Gen(1^{\lambda}),~Hash:\{0,1\}^{\lambda}
+        \times \{0,1\}^*
+        \rightarrow \{0,1\}^n$)
+    \end{enumerate}
+    Qu'on appelle fonction de Hashage.
+\end{defn}
 
+$Coll_H(\lambda):$
+    \begin{align*}
+        &-s\leftarrow Gen(1^{\lambda})\\
+        &-(m_0,m_1)\leftarrow \A(s)\\
+        &-renvoie (H^{(s)}(m)==H^{(s)}(m')~\wedge~ m\ne m')\\
+    \end{align*}
 
+\begin{defn}
+    On dit que $H$ est resistante aux collisions si $\forall$
+     PPT $\A$: \[P(Coll_{H,\A}=1)=negl(\lambda)\]
+\end{defn}
+
+\subsection{Merkle-Daingard}
+Soit $(Gen, h)$ une fonction de compression (Comme une 
+fonction de hashage, mais qui prend des messages 
+de taille $n' > n$ (la taille de la sortie)).\\
+\begin{defn}
+    Soit $IV\in\{0,1\}^n$, on pose pour $m_i$ de taille 
+    $n'-n$: \[H^s(m_1\ldots m_L)
+    =h^{(s)}(h^{(s)}\ldots (h^{(s)}(h^{(s)}(IV||m_1)||m_2)\ldots||m_L)|| L)\]
+\end{defn}
+
+La sécurité venant de $h$ se prouve par l'absurde, faut juste 
+l'écrire.
+
+\section{Hash and MAC}
+Soit $\Pi_{MAX}$ un MAC inforgeable et $H$ une fonction 
+de hashage résistante aux collisions.
+\begin{defn}
+    On définit $\Pi_{Hash\&Mac}$ ou 
+    \begin{align*}
+        &Gen:~k\leftarrow \Pi_{MAC}.Gen,~s\leftarrow H.Gen\\
+        &MAC_{k,s}(m):~\Pi_{MAC}.MAC(H.Hash(m))\\
+    \end{align*}
+\end{defn}
+Si $H$ est vulnérable, une collision donne une forge.
+Si $\Pi_{MAC}$ est vulnérable on trouve une collision.\\
+\indent Ca se formalise comme ça, $Coll_{\A}(s):$
+\begin{align*}
+    &k\leftarrow Gen(\lambda)\\    
+    &(m^*,t^*)\leftarrow \A^{\Or_{Mac}}()\\
+    &si~\exists\in Q~tq~H(m)=H(m^*)~renvoie~(m,m^*)\\
+    &sinon~renvoie~
+\end{align*}
+avec $\Or_{Mac}(m):$
+\begin{align*}
+    &Q=Q\cup\{m\}\\
+    &h\leftarrow H^s(m)\\
+    &renvoie~(Mac_k(h))\\
+\end{align*}
+De l'autre côté $\mathcal{B}^{\A,\Or_{Mac'}}(1^{\lambda}):$
+\begin{align*}
+    &s\leftarrow Gen(1^{\lambda})\\
+    &(m^*,t^*)\leftarrow \A^{\Or_{Mac'}}\\
+    &renvoie~(H^s(m^*),t^*)\\
+\end{align*}
+avec $\Or_{Mac'}(m):$
+\begin{align*}
+    &renvoie~(\Or_{Mac}(H^s(m)))\\
+\end{align*}
 
 
 \end{document}
