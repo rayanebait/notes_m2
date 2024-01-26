@@ -245,6 +245,7 @@ Probleme de la crypto sym : nombre quadratique de clé par rapport au nb de pers
     \item Signature
 \end{enumerate}
 
+
 Etant donné une fct de chiffrement asym $f$ :
 \begin{itemize}
     \item $f(m,k_{pub})=c$
@@ -713,5 +714,109 @@ modulo un polynome)\\
 
 \textbf{Complexité:} $\Or(\log^{10,5}(n))$.
 
+\section{factorisation d'entiers}
+La méthode naive est en $\Or(\sqrt{n}\log^2n)$ comme d'hab.
+\subsection{Algo de Rho-Pollard}
+\textbf{Idée:} On fait une balade aléatoire dans $\Z/n\Z$
+(on calcule une suite ($x_i$)) et pour tout $x_j$ calcule
+ou teste si pour $i<n$ $(x_j-x_i)\wedge n\ne1,n$. On obtient
+un $r$ tel que $x_j\equiv x_i\mod r$. (On prend $x_j-x_i$ Et
+pas $x_j$ pour avoir un paradoxe des anniversaires (bcp plus de poss
+en ajoutant $x_i$)). \\
+\begin{prop}[Rappel:]
+    Une suite $f(x_i)=x_{i+1}$ de $S\to S$ ($S$ fini),
+    contient une collision en $l$ étapes ou $l=1+[\sqrt{2\lambda r}]$.
+    avec proba $\leq e^{\lambda}$.
+\end{prop}
+
+\textbf{Sans mémoire:} Etant donné $(i_0,j_0)$ deux premiers 
+indices tq $(x_{j_0}-x_{i_0})\wedge n=r\ne1,n$. Soit $j\in\N$, on
+pose $h=[\log j]$(ie $2^h\leq j<2^{h+1})$. On pose $i=2^n-1$
+\indent On calcule $(x_k)$ tq $f(x_k)=x_{k+1}$ et on teste 
+si $(x_j-x_i)\wedge n\ne1,n$ avec $i$ déf comme précedemment.
+Si $x_{j_0}\equiv x_{i_0}\mod r$ alors \[
+    x_{j_0+m}\equiv f^m(x_{j_0})\equiv f^m(x_{i_0})\equiv 
+    x_{i_0+m}\mod r
+    \]
+Donc si $j-i=j_0-i_0$ on a $x_j\equiv x_i\mod r$. On pose 
+$h_0=[\log j_0]$ et $i=2^{h_0+1}-1$ et $j=i+j_0-u_0$. Par 
+dèf de $j$, $x_j\equiv x_i\mod r$: \[
+    j=2^{n_0+1}-1 +j_0-i_0
+\]
+\[
+    j_0-i_0\geq 1~~\text{donc}~~j\geq 2^{k_0+1}
+\]
+\[
+    j_0-i_0\leq j_0<2^{k_0+1}
+\]
+Donc $j<2^{k_0+1}-1+2^{k_0+1}=2^{k_0+2}-1$ et 
+$2^{k_0+1}\leq j<2^{k_0+2}$ ($[\log j]=h_0+1$)\\
+\newline
+\indent \textbf{La fonction $f$ est arbitraire faut bien
+ la choisir}
+
+\subsection{Méthode de Fermat et améliorations}
+\begin{prop}
+    Il existe une bijection entre les ocupes $(a,b)$ tq 
+    $x=ab$ et les couples $(t,s)$ tq $x=t^2-s^2$.
+\end{prop}
+
+\textbf{Idée:} On pose $t=[\sqrt{n}]+1$ et on teste si 
+$t^2-n$ est un carré. Sinon on passe à $t+1,t+2,\ldots$
+
+\textbf{Méthode de Dixon}\\
+\textbf{Idée:} Au lieu de travailler dans $\Z$, on travaille
+dans $\Z/n\Z$. On cherche $t^2\equiv s^2\mod n$. Si on 
+a un couple, on calcule $(t-s)\wedge n$. Comme c'est dur 
+de trouver ces couples on les construits.\\
+\textbf{Méthode:}\\
+On décide d'une base de facteurs $B\subseteq\Z$  pour 
+laquelle on va chercher des $t$ tq $t^2\mod n$ soit 
+$B$-friables i.e. $t^2=\prod_{b_i\in B}b_i^{\alpha_i}\mod n$.
+\begin{itemize}
+    \item On choisit $A\in\Z$ ou on va tester si $t\in A$ est tq 
+$t^2\mod n$ est $B$-friable.
+    \item On teste si $\forall t\in A$, $t^2\mod n$ est 
+$B$-friable. On obtient ainsi $A'\subseteq A$ où pour 
+tout $t\in A'$, $t^2\mod n$ est friable.
+    \item Pour tout $t_j\in A'$, on associe \[
+        \epsilon_j=(\alpha_{1j}\mod 2, \alpha_{2j}\mod 2,
+        \ldots,\alpha_{bj}\mod 2)
+    \]
+    \item A partir de ces $\epsilon_j$ on cherche $\sum_j \epsilon_j=0$
+    \[
+        \prod_j t_j^2=\prod\prod_{b_i\in B}b_i^{\alpha_{i,j}}
+        =\prod_{b_i\in B}=b_i^{\sum \alpha_{i,j'}}\mod n
+    \]
+\end{itemize}
+
+\noindent \textbf{Crible quadratique:}
+\begin{itemize}
+    \item $B=\{p| p<P~\text{et}
+\left(\frac{n}{p}\right)=1\}\cup\{2\}$, on pose $\#B=h$.
+    \item $A=\big[[\sqrt{n}]+1,[\sqrt{n}]+K\big]$ où
+$P<K<P^2$.
+\end{itemize}
+Dans ce crible on va tester si $t^2 - n$ est $B$-friable 
+avec $t\in A$. Si $t^2-n\mod[n]=p_i^{\alpha_i}
+\prod_{i\ne1}p_l^{\alpha_l}$ avec $\alpha_i\geq 1$. Alors 
+$t^2-n\equiv 0 \mod[p_i^{\alpha_i}]$ donc $t^2\equiv n\mod[p_i^{\alpha_i}]$.
+Si $t$ est tq $t^2\equiv n\mod[p_i]$ alors $(t+kp_i)^2\equiv n \mod[p_i]$.\\
+
+\noindent \textbf{suite:} Soit $2\ne p\in B$. Par def $\left(\frac{n}{p}\right)=1$.
+On calcule $x_0$ tq $x_0^2\equiv n\mod[p]$. On cherche 
+$x_1$ tq $(x_0+x_1p)^2\equiv n\mod[p^2]$ puis 
+\[
+    x_0^2+2x_0x_1p+x_1^2p^2\equiv n\mod[p^2]
+\]
+\[
+    p(k_0+2x_0x_1)\equiv0\mod[p^2]
+\]
+donc $k_0+2x_0x_1\equiv 0\mod[p]$. On relève la racine 
+tant qu'il existe $t\in A$ tq $t^2\equiv n\mod[p^{\alpha}]$
+
+\textbf{Complexité:} \(\Or(e^{(1+\epsilon)\sqrt{\log n \log\log n}})\)
+
+\subsection{}
 
 \end{document}
