@@ -1,0 +1,217 @@
+
+\documentclass[12pt]{article}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{hyperref, pagecolor, mdframed}
+\usepackage{graphicx, amsmath, latexsym, amsfonts, amssymb, amsthm,
+amscd, geometry, xspace, enumerate, mathtools}
+\usepackage{tikz}
+
+\theoremstyle{plain}
+\newtheorem{thm}[subsubsection]{Th\'eor\`eme}
+\newtheorem{lem}[subsubsection]{Lemme}
+\newtheorem{prop}[subsubsection]{Proposition}
+\newtheorem{propr}[subsubsection]{Propri\'et\'e}
+\newtheorem{cor}[subsubsection]{Corollaire}
+\newtheorem{intro}[section]{Introduction}
+\newtheorem{thm2}[subsection]{Th\'eor\`eme}
+\newtheorem{lem2}[subsection]{Lemme}
+\newtheorem{prop2}[subsection]{Proposition}
+\newtheorem{propr2}[subsection]{Propri\'et\'e}
+\newtheorem{cor2}[subsection]{Corollaire}
+
+\theoremstyle{definition}
+\newtheorem{defn}[subsubsection]{D\'efinition}
+\newtheorem{rmq}[subsubsection]{Remarque}
+\newtheorem{conj}[subsubsection]{Conjecture}
+\newtheorem{exmp}[subsubsection]{Exemples}
+\newtheorem{quest}[subsubsection]{Exercices}
+\newtheorem{defn2}[subsection]{D\'efinition}
+\newtheorem{rmq2}[subsection]{Remarque}
+\newtheorem{conj2}[subsection]{Conjecture}
+\newtheorem{exmp2}[subsection]{Exemples}
+\newtheorem{quest2}[subsection]{Exercices}
+
+\theoremstyle{remark}
+\newtheorem{rem}{Remarque}
+\newtheorem{note}{Note}
+
+\newcommand{\M}{\mathcal{M}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\Or}{\mathcal{O}}
+\newcommand{\gr}{\color{Sepia}}
+\newcommand{\rg}{\color{Red}}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=Green,
+    filecolor=RoyalPurple
+}
+
+\definecolor{wgrey}{RGB}{148, 38, 55}
+
+
+\title{Cryptographie}
+\date{26 septembre 2023}
+\begin{document}
+\maketitle
+
+\section{Codes}
+\subsection{Définitions}
+\begin{defn}
+    La distance de Hamming sur $\F_q^n$ est donnée par $d(x,y)=\#\{i|x_i\ne y_i\}$.
+\end{defn}
+\begin{defn}
+    Un \([n,k]_q\) code linéaire est un sev de $\F_q^n$ de dim $k$. Un $[n,k,d]_q$ code 
+    définit une distance minimale des élts du sev.
+\end{defn}
+\begin{defn}
+    On peut def un code par une matrice génératrice
+    est une matrice dont les colonnes engendre le code.
+    (on la suppose de taille $n*l$, $l=k$.)
+\end{defn}
+
+\begin{defn}
+    On peut aussi def par une matrice de parité. (i.e. $[n,k]_q=\ker(H)$)
+\end{defn}
+(Le nom parité vient, du cas $\F_2$.)
+
+\begin{defn}
+    Matrice génératrice systématique: \[M=[id_k, A]\]
+    Elle est unique (combinais lineaire de A $\implies$ tjr une base mais pas le mm sev)
+\end{defn}
+
+\begin{defn}[Distance minimale]
+    Etant donné un code $C$, $d_{C}=\inf\{d(x,y)| x\ne y\}$. Ou 
+    \[
+        \inf\{d(x,0)\}
+    \]
+\end{defn}
+
+\begin{lem}
+    Etant donné un $[n,k,d]_q$-code linéaire $C$, pour tout deux $x,y$: 
+    \[
+        B(x,[(d-1)/2])\cap B(y,[(d-1)/2])=\emptyset
+    \]
+\end{lem}
+
+\begin{thm}[Singleton]
+    $d_C\leq n-k+1$.
+\end{thm}
+
+\begin{thm}[Pas de redondance inutile]
+    Les codes MDS (qui atteignent la borne) vérifient:
+    \begin{itemize}
+        \item Tout ensemble de $k$ colonnes d'une matrice génératrice $G$ d'un MDS 
+        est inversible.
+        \item Tout ensemble de $n-k$ colonnes d'une matrice de parité de $G$ d'un MDS 
+        est inversible.
+    \end{itemize}
+\end{thm}
+
+\section{Codes étendus}
+\begin{defn}
+    $C$ un $[n,k]_q$-code tel que $\exists c\in C$, $\sum c_i\ne 0$. Le code 
+    étendu de $C$ est \[Ext(C)=\{(c_1,\ldots, c_n, -\sum c_i)|(c_i)\in C\}\]
+\end{defn}
+\begin{prop}
+    $H'=\begin{pmatrix}
+        H&&0\\
+         &&\vdots\\
+         &&0\\
+        1&\ldots&1
+    \end{pmatrix}$
+    est une matrice de parité de $Ext(C)$ et $Ext(C)$ est un 
+    $[n+1,k]_q$
+\end{prop}
+\subsection{Poinconnage}
+\begin{defn}
+    $C$ un $[n,k,d]_q$-code et $I\subset [1,n]$. 
+    \[
+        P_I(C):=\{(c_i)_{i\in[1,n]-I}\}
+    \] 
+\end{defn}
+(On enleve des lignes de la matrice)
+
+\textbf{Notation:} Etant donné $M$ une matrice et $I$ des indices, on note $M_I$ la matrice indexée par I.
+
+\begin{prop}
+    Soit $G\in \F_q^{k*n}$ une matrice génératrice de $C$, alors 
+    $G_{i\in[1,n]-I}$ est une matrice génératrice de $P_I(C)$.
+\end{prop}
+\begin{prop}
+    $P_I(C)$ est un $[n',k',d']_q$ code avec $n'=n-\# I$, $k'\leq K$ 
+    et $d-\#I\leq d'\leq d$.
+\end{prop}
+\textbf{Preuve}: Pour $d'$, soit $c\in C$, alors 
+\[\lvert c\rvert-\#I\leq\lvert c_{i\in[1,n]-I}\rvert \]
+\subsection{Raccourcissement}
+\begin{defn}
+    \[R_I(C):=\{(c_i)_{i\in[1,n]-I}| c\in C~et~(c_i)_{i\in I}=0\}\]
+\end{defn}
+(On enleve des lignes de la matrice de parité)
+\begin{prop}
+    Si $H$ est une matrice de parité de $C$ alors
+    $H_{[1,n]-I}$ est une matrice de parité de $R_I(C)$.
+\end{prop}
+\textbf{Preuve}: $H':=H_{[1,n]-I}$\\
+(*) Mq $R_I(C)\in Ker(H')$. Soit $c'\in R_I(C)$, $\exists c\in C$ tq 
+$c_{[1,n]-I}=c'$, or $Hc^T=0=H'c'+H_Ic_I=H'c'$
+(**) Mq $Ker(H')\subseteq R_I(C)$. Soit $c'\in Ker(H')$ donc 
+$H'c'^T=0$. Soit $c\in \F_q^n$ tq $c_I=0$ et $c_{[1,n]-I}=c'$. On a 
+alors $Hc^T=H'c'^T+H_Ic_I=H'c'^T=0$ donc $c\in C$ et donc $c'\in R_I(C)$.
+
+\begin{prop}
+    $R_I(C)$ est un $[n', k', d']_q$-code avec
+    $n'=n-\#I$, $k'\geq k-\#I$, $d'\geq d$.
+\end{prop}
+\textbf{Preuve}: Pour $d'$, $\{c|c_{[1,n]-I}\in R_I(C)+c_I=0\}\subseteq C$ d'ou $d'\geq d$.
+
+\begin{prop}
+    $P_I(C)^{\perp}=R_I(C)$ et $R_I(C)^{\perp}=P_I(C)$.
+\end{prop}
+\subsection{Subfield Subcode}
+Dans la suite $m\geq1$. 
+\begin{defn}
+    Soit $C$ un $[n,k]_{q^m}$ code linéaire. Le subfield subcode de $C$ est 
+    $C|_{\F_q}=C\cap \F_q^n$.
+\end{defn}
+\begin{prop}
+    Si $C$ est $[n,n-r,d]_{q^m}$. Alors $C|_{\F_q}$ est $[n,\geq n-mr,\geq d]_q$.
+\end{prop}
+\textbf{Preuve}: $C|_{\F_q}\subseteq C$ donc $d'\geq d$. Pour la dimension
+on pose \[\phi:\F_{q^m}^n\to\F_{q^m}^n\]\[(x_i)\mapsto (x_i^q-x_i)\]. On a 
+$Ker(\phi)=C|_{\F_q}$. Restreindre à $C$ et conclure.
+
+\subsection{Code trace}
+\begin{defn}
+    Soit $a\in \F_q^n$. \[Tr_{\F_q^m/\F_q}(a):= a+a^q+\ldots+q^{m-1}\]
+\end{defn}
+\begin{rem}
+    Trace donnée par la mul ! (regarder une base du type $(\alpha^i)_i$)
+\end{rem}
+
+\begin{prop}
+    $Tr$ est à valeur dans $\F_q$
+\end{prop}
+(juste appliquer frob, sinon trouver la matrice et le pol char qui sont dans $\F_q$)
+
+\begin{prop}
+    La trace est $\F_q$-linéaire, surjective et non dégénérée.
+\end{prop}
+
+\begin{prop}
+    Soit $C$ un $[n,k,d]_{q^m}$ code linéaire, alors $Tr(C)$ est un 
+    $[n',k',d']_q$ un code linéaire avec $n'=n$ et $k'\leq mk$.
+\end{prop}
+
+\begin{thm}[Delsarte]
+    $(C|_{\F_q})^{\perp}=Tr(C^{\perp})$ et $(Tr(C))^{\perp}=C|_{\F_q}$.
+\end{thm}
+\textbf{Preuve:} 
+
+\end{document}

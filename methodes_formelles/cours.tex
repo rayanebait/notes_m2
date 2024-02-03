@@ -1,0 +1,250 @@
+\documentclass[12pt]{article}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{hyperref, pagecolor, mdframed }
+\usepackage{tabularx, graphicx, amsmath, latexsym, amsfonts, amssymb, amsthm,
+amscd, geometry, xspace, enumerate, mathtools}
+\usepackage{tikz}
+
+\theoremstyle{plain}
+\newtheorem{thm}[subsubsection]{Th\'eor\`eme}
+\newtheorem{lem}[subsubsection]{Lemme}
+\newtheorem{cor}[subsubsection]{Corollaire}
+
+\theoremstyle{definition}
+\newtheorem{defn}[subsubsection]{Definition}
+\newtheorem{prop}[subsubsection]{Proposition}
+
+\theoremstyle{remark}
+\newtheorem{rem}[subsection]{remarque}
+
+\newcommand{\fdiv}{\textrm{div}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\algK}{\overline{K}}
+\newcommand{\algF}{\overline{\mathbb{F}}}
+\newcommand{\Pic}{\textrm{Pic}}
+\newcommand{\Hom}{\textrm{Hom}}
+\newcommand{\End}{\textrm{End}}
+\newcommand{\Disc}{\textrm{Disc}}
+\newcommand{\Det}{\textrm{Det}}
+\newcommand{\Tr}{\textrm{Tr}}
+\newcommand{\Or}{\mathcal{O}}
+\newcommand{\OK}{\mathcal{O}_{K}}
+\newcommand{\OL}{\mathcal{O}_{L}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\ai}{\mathfrak{a}}
+\newcommand{\bi}{\mathfrak{b}}
+\newcommand{\w}{\omega}
+\newcommand{\gr}{\color{Sepia}}
+\newcommand{\rg}{\color{Red}}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=Green,
+    filecolor=RoyalPurple
+}
+
+\newcolumntype{M}[1]{>{\raggedright}m{#1}}
+\definecolor{wgrey}{RGB}{148, 38, 55}
+
+
+\begin{document}
+\title{Cryptographie asymétrique}
+\date{19 septembre 2023}
+\maketitle
+
+\section{CTL}
+syntaxe:
+\begin{itemize}
+    \item $E$ il existe un chemin..
+    \item $A$ pour tout chemin..
+    \item $\mu$ jusqu'à..
+    \item $X$ a la prochaine étape..
+    \item $F$ chemin ou a un moment.. 
+    \item $G$ chemin ou on a toujours.. 
+    \item $\wedge$, $\&$.
+
+\end{itemize}
+structure de Kripke:
+\begin{defn}
+    $\S=(S,s_o,\to,l)$, ou $S$ est un ensemble fini d'état, $\to\subset S\times S$,
+    $l:S\to2^{Al}$: associe un ens de prop atomiques à tout état de $\S$.
+\end{defn}
+\begin{rem}
+    Plusieurs anomalies, sans successeurs $AX\phi\equiv T$. 
+    Si $\to$ est ``totale'', $AX\phi=\neg tX\neg\phi$ sinon $\neg EX\phi=AX\neg\phi$.
+\end{rem}
+\subsection{model-checking}
+Question, étant donné une structure de Kripke $\S$ et une formule $\phi$.
+Est-ce qu'il existe un algorithme qui renvoie $\S,s_0\vDash \phi$. 
+Oui ce qu'on fait c'est qu'on découpe la formule en sous formule puis récursion, 
+et on vérifie les formules atomiques. On marque chaque sous formules puis on monte 
+petit à petit.
+
+\textbf{Algorithme, Cas $\phi=A\phi_1\mu\phi_2$:} 
+\begin{itemize}
+    \item Marquage($\phi_1$)
+    \item Marquage($\phi_2$)
+    \item Pour tout $s\in S$:
+    \begin{itemize}
+        \item $s.\phi:=false$
+        \item $s.nbsucc:=deg(s)$(on est sur un graphe)
+        \item si $s.\phi_2=T$ alors $L=L\cup\{s\}$
+    \end{itemize}
+    \item Tant que $L\ne\emptyset$:
+    \begin{itemize}
+        \item Piocher $s$ dans $L$
+        \item $s.\phi:=T$
+        \item Pour tout $s'\to s$:
+        \begin{itemize}
+            \item $s'.nbsucc-=1$
+            \item si $s'.nbsucc=0\and s'.\phi_1=T\and s'.\phi_2\ne T$: $L:=L\cup\{s'\}$
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\begin{prop}
+    Décider si $\phi\in CTL$ est vraie pour $\S$ se fait en temps 
+    $\Or(|\phi||\S|)$, ($|\S|=|S|+|\to|$). (polynomial)
+\end{prop}
+
+Le model checking de LTL est un pb PSPACE-complet ($2^{|\phi|}|\S|$).
+
+\begin{rem}
+    $A\phi_1\mu\phi_2\equiv AF\phi_2\and\neg E(\neg\phi_2)\mu(\neg\phi_1\and\neg\phi_2)$ veut 
+    simplement dire, on peut pas atteindre $\phi_2$ en croisant un état ou on a ni 
+    $\phi_1$ ni $\phi_2$.
+\end{rem}
+
+\section{PCTL}
+\begin{defn}[Discrete Time Markov Chain]
+    Une chaine de Markov: $M=(S,P,s_{init}, l)$ consiste en, $S$ un ensemble d'états (dénombrable),
+    $s_{init}$ l'état de départ, $P:S\times S\to [0,1]$ une matrice de probabilités, 
+    $l:S\to 2^{Al}$ l'étiquetage des états des props atomiques.
+\end{defn}
+
+Si $M$ est finie (i.e. $S$ est fini), $|M|=|S|+\{(s,s')| P(s,s')>0\}$. 
+
+\begin{defn}
+    Une chaine de Markov $M$ induit une structure de Kripke $K_{M}=(S, s_{init}, \to,l)$ par 
+    $(s,s')\in\to\Leftrightarrow P(s,s')>0$.
+\end{defn}
+
+\ldots defs a rajouter 
+
+\subsection{Probabilités}
+\begin{defn}[Tribu, $\sigma$-algèbre sur $@W$]
+    Ensemble de partie stable par complémentaire, union dénombrable et contenant le vide.
+\end{defn}
+
+\begin{defn}[mesure de Probabilité]
+    Mesure $\mu$ tq $\mu(@W)=1$.
+\end{defn}
+
+\begin{defn}
+    On définit $Path^F(M)$ les chemins finis.
+\end{defn}
+
+Soit $M=(S,s_0, P, l)$ une chaine de Markov. Soit $\pi_0$ un prefixe de $\pi\in Path(M)$. 
+
+\begin{defn}
+    $Cyl(\pi_0):=\{\text{Chemins tq} \pi_0\text{en est un prefixe}\}$.
+\end{defn}
+
+Pour nous, $@W$ est l'ens des chemins et $\AA$ la tribu des cylindres de $M$.
+\begin{defn}
+    La mesure de probabilité sur $\AA$ est déf par la proba sur le préfixe.(produit des transitions)
+\end{defn}
+
+\subsection{Propriétés d'accessibilité}
+$M$ une chaine de Markov et $A,B\subset S$ des ensembles d'états.
+
+\begin{itemize}
+    \item 3 propriétés d'accessibilités:
+    \begin{itemize}
+        \item $FB=\{\text{chemin qui croise eventuellement B}\}$
+        \item $A\mu B=\{\text{chemin dans A jusqu'a croiser B, + croise B eventuellement}\} $
+        \item $GFB=\{\text{croise B une infinité de fois}\}$.
+    \end{itemize}
+\end{itemize}
+Etant donné $\phi$ d'un des types décrits avant. 
+\[
+    P(s\vDash \phi) = P(\{\pi\in Path(M,s)|\pi\vDash\phi\})
+\]
+Faut vérifier que c'est mesurable:
+\begin{itemize}
+    \item Pour $FB$ on prend l'union dénombrable des chemins ayant leur bout dans $B$.
+    \item Pour $A\mu B$, pareil que $FB$ mais ou le chemin est d'abord dans $A$.
+    \item Pour $GFB$ on prend l'intersection de $FB$ et $A\mu B$: 
+    \[
+        \cap_n\cup_{m\geq n}\cup_{s_n\in B}Cyl(s_0\ldots s_n)
+    \]
+\end{itemize}
+
+\subsection{Propriétés d'accessibilité}
+Pour $s\in S$, on déf $x_s=P(s\vDash FB)$:
+\begin{itemize}
+    \item $s\in B$, $x_s=1$.
+    \item $s\nvDash EFB$, alors $x_s=0$. (exprimable en CTL)
+    \item Pour les autres $s\in S_{?}:= \{s\in S| s\notin B \wedge s\vDash EFB\}$:
+    \[
+        x_s = \sum_{t\in B}p(s,t)+ \sum_{t\in S_{?}}p(s,t)x_t
+    \]
+\end{itemize}
+
+\noindent Si $\overline{x} = (x_s)_{s\in S_?}\to \overline{x}=\overline{b}+M\overline{x}$. ($M=(p(s,t))_{s,t}$)\\
+
+\noindent On déf aussi $x_s=Pr(s\vDash A\mu B)$:
+\begin{itemize}
+    \item $s\in B$, $x_s=1$.(noté $S_{=1}\subseteq \{Pr(s\vDash A\mu B)=1\}$, pas d'égalité)
+    \item $s\nvDash \to E(A\mu B)$ (il existe un etat qui atteint B en restand dans A),
+     alors $x_s=0$. (noté $S_{=0}:=\{s\in S| Pr(s\vDash A\mu B)=0\}$, egalité ici, permet de pas considérer
+     les probas)
+    \item $S_?=S-(S_{=0}\cup S_{=1})$
+\end{itemize}
+Soit $\overline{x}=(x_s)_{s\in S_?}$.
+\begin{prop}
+    $\overline{x}$ est la solution du système d'équations $\overline{y}=M\overline{y}+\overline{b}$
+    avec $M$ carrée. ($\overline{b}=(b_s)_{s\in S_?}$ et $b_s=\sum_{t\in B} p(s,t)$)
+\end{prop}
+(\textbf{On résoud $M\overline{x}=\overline{x}$, clair+unicité.}) \\
+
+On peut aussi caractériser par points fixes. On regarde: 
+\[
+    \Gamma: [0,1]^{S_?}\to[0,1]^{S_?}
+\]
+\[
+    \Gamma(\overline{y}=M\overline{y}+\overline{b})   
+\]
+alors $\overline{x}=(x_s)$ avec $x_s=Pr(s\vDash A\mu B)$ est 
+le plus petit point fixe de $\Gamma$. On a 
+\[
+    \Gamma^{n}(x_s)=Pr(s\vDash A\mu^{\leq n}B)
+\]
+avec $s\vDash EA\mu^{\leq n}B\equiv$ il existe un chemin depuis $s$, $\pi$, tq 
+$\exists i\leq n$, $\pi(i)\in B$ et $\forall0\leq j<i$, $\pi(j)\in A$. En gros 
+on arrive dans $B$ avant $n$ étapes. Si on pose 
+\[
+    x_s^{(n)}=Pr(s\vDash A\mu^{\leq n}S_{=1})   
+\]
+et on a 
+\[
+    \overline{x}^{(0)}\leq\ldots\leq\overline{x}^{(i)}\leq\ldots\leq \overline{x}
+\]
+(pour $x\leq y$ si $\forall i,~x_i\leq y_i$)
+On prouve 
+\[
+    x_s^{(n)}=Pr(s\vDash A\mu^{\leq n}S_{=1})   
+\]
+\begin{itemize}
+    \item récurrence: $x_s^{(n+1)}=\sum_{(s,t)\in S_?} p(s,t)x_t^{(n)}+\sum_{t\in S_{=1}} p(s,t)$
+    \item le premier terme est en degré $n$ et l'autre $1$.
+\end{itemize}
+Et on prouve $\overline{x}$ est un point fixe, et le plus petit. 
+\begin{itemize}
+    \item $x_s=\sum_{t\in S_{=0}} p(s,t)x_t+\sum_{t\in S_{=1}}p(s,t)x_t+\sum_{t\in S_?}p(s,t)x_t$
+\end{itemize}
+
+\end{document}

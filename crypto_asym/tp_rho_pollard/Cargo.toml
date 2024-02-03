@@ -1,0 +1,9 @@
+[package]
+name = "tp_rho_pollard"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rug = "1.23.0"
