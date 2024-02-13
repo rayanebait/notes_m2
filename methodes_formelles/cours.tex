@@ -184,7 +184,7 @@ Faut vérifier que c'est mesurable:
 \end{itemize}
 
 \subsection{Propriétés d'accessibilité}
-Pour $s\in S$, on déf $x_s=P(s\vDash FB)$:
+Pour $s\in S$, \textbf{on déf $x_s=P(s\vDash FB)$}:
 \begin{itemize}
     \item $s\in B$, $x_s=1$.
     \item $s\nvDash EFB$, alors $x_s=0$. (exprimable en CTL)
@@ -196,7 +196,7 @@ Pour $s\in S$, on déf $x_s=P(s\vDash FB)$:
 
 \noindent Si $\overline{x} = (x_s)_{s\in S_?}\to \overline{x}=\overline{b}+M\overline{x}$. ($M=(p(s,t))_{s,t}$)\\
 
-\noindent On déf aussi $x_s=Pr(s\vDash A\mu B)$:
+\noindent \textbf{On déf aussi $x_s=Pr(s\vDash A\mu B)$}:
 \begin{itemize}
     \item $s\in B$, $x_s=1$.(noté $S_{=1}\subseteq \{Pr(s\vDash A\mu B)=1\}$, pas d'égalité)
     \item $s\nvDash \to E(A\mu B)$ (il existe un etat qui atteint B en restand dans A),
@@ -246,5 +246,156 @@ Et on prouve $\overline{x}$ est un point fixe, et le plus petit.
 \begin{itemize}
     \item $x_s=\sum_{t\in S_{=0}} p(s,t)x_t+\sum_{t\in S_{=1}}p(s,t)x_t+\sum_{t\in S_?}p(s,t)x_t$
 \end{itemize}
+
+\noindent \textbf{Enfin on def $x_s=Pr(s\vDash GFB)$}
+
+\begin{defn}
+    Un élt $F$ est dit presque sur sous l'hyp d'un evt $D$
+    ssi $Pr(D)=Pr(D\cap F)$
+\end{defn}
+
+\textbf{Propriété GF:} Pour une chaine de Markov $M$
+(possiblement infinie) et $s,t\in S$, alors on :
+\[
+    Pr(s\vDash GF t)=Pr(s\vDash \bigwedge_{\pi\in Path^F(t)} GF \pi)
+\]
+(pour tout $\pi$ préfixe fini partant de $t$.)
+
+\textbf{Preuve:} $\pi=ts_1\ldots s_n$ et on note
+ $p= \prod_i Pr(s_i, s_{i+1})$. On montre les proba 
+\begin{itemize}
+    \item $GFt\wedge G\neg \pi$ nulle.
+    \item $GFt\wedge FG\neg \pi$ nulle
+\end{itemize}
+On déf $E_n(\pi)=$"on visite au moins $n$ fois $t$ et pas
+$\pi$ avant au moins $n$ étapes. On a 
+\[
+    Pr(E_n(\pi))\leq (1-p)^n
+\]
+On pose $E(\pi)=\bigcap E_n(\pi)$, on croise jamais $\pi$.
+On a $E_{n+1}(\pi)\subseteq E_{n}(\pi)$ d'ou 
+\[
+    Pr(E_(\pi))=\lim_{n\to \infty} 
+    Pr(E_n(\pi))\leq \lim_{n\to \infty} (1-p)^n=0
+\]
+On déf mtn $F_n(_pi)=GFt\wedge X^n\neg F\pi$ puis 
+$F(\pi)=\bigcup F_n(\pi)$, on a $F_n\subset F_{n+1}$ d'ou:
+\[Pr(s\vDash F(\pi))=\lim_{n\to\infty}Pr(s\vDash F_n(\pi))\]
+Et on a en fait $Pr(s\vDash F_n(\pi))=\sum_{s'\in S}
+Pr(s\vDash X^n s')Pr(s'\vDash E(\pi))=0$. Enfin
+\[F:=\bigcup_{\pi} F(\pi)\]
+
+et \[Pr(s\vDash F)\leq Pr(\sum_{\pi} F(\pi))=0\]
+d'ou \[Pr(s\vDash GFt)=Pr(s\vDash GFt\wedge \bigwedge_{\pi}
+GF\pi)+Pr(s\vDash GFt\wedge \bigwedge \lor_{\pi} FG\neg \pi)\]
+et le deuxième terme vaut 0. \qed\\
+\newline
+Autrement dit on visite infiniment souvent $t$ 
+si et seulement si on visite tout les préfixes finis
+sortant de $t$ infiniment souvent.
+
+\begin{defn}
+    $CFC(M)$ les composantes fortement connexes (i.e. digraphe
+     ou on peut accéder achaque point de chaque point.).
+\end{defn}
+\begin{defn}
+    Une cfc est terminale si $Post^*(C)\subseteq C$ i.e.
+    pas de chemin sortant. On appelle $CFCT$ l'ens.
+\end{defn}
+On note $inf(\pi)$ les états de $\pi$ qui apparaissent 
+infiniment.
+
+\begin{prop}
+    Si $M$ est une chaine finie. Alors 
+    \[Pr(\{\pi/\inf(\pi)\in CFCT(M)\})=1\]
+\end{prop}
+\textbf{Preuve:}$I(C):=\{\pi/\inf(\pi)\in C\}$, 
+\[\sum_{C\in CFC(M)}Pr(I(C))=1\]
+Soit $C\in CFC(M)$ tq $Pr(I(C))>0$ et $t\in \inf(\pi)$.
+On a $Pr(s\vDash GFt)>0$ d'ou $\forall\pi\in Path^F(t)$,
+$Pr(passer par \pi)>0$(en fait 1). Si $C$ n'est pas terminale
+on peut en sortir, contradictoire avec $\inf(t)=C$.
+Tout les $\pi$ doivent rester dans $C\to$terminale. \qed\\
+\begin{cor}
+    Si $M$ est une CM finie:
+    \[Pr(s\vDash GFt)=
+    \begin{cases}
+        0& t\notin C\subset CFCT(M)\\
+        Pr(s\vDash FC)& sinon\\
+    \end{cases}\]
+\end{cor}
+
+Objectifs: On suppose que M est finie.
+
+Calculer $S_{\sim\alpha}(c\mu B)$, états vérifiant $c\mu b$. On
+a \[
+    \sim\in\{=,<,>,\leq,\geq\}
+\]
+\[
+    \alpha\in\{0,1\}
+\]
+
+$\to$$S_{=0}(c\mu B)$...
+
+$\to S_{=1}(c\mu B)$. ($c,B\subseteq S$, $M(S,P,s_0, l)$)\\
+
+On construit de chaine de Markov $M'$ a partir de $M$ ou
+les états de $B\cup(S\backslash C)$. Sont absorbantes. (i.e.
+bouclent sur eux meme avec proba 1)\\
+$M'=(S,P', s_0, l)$, avec :
+\[
+    P'(s,t)=\begin{cases}
+        1& si~t=s~et~s\in B\cup S\backslash C\\
+        0& si~t\ne s~et~s\in B\cup S\backslash C\\
+        P'(s,t)& sinon\\
+    \end{cases}
+\]
+
+Pour les états de $B\cup S\backslash C$ on connait 
+leur proba de vérifier $c\mu B$. \[B\to 1\]
+\[S\backslash (C\cup B)\to 0\]
+
+On a \[Pr^M(s\vDash c\mu B)=Pr^{M'}(s\vDash FB)\]
+ET \[Pr^M(s\vDash c\mu B)=Pr^{M'}(s\vDash FB)=1~si~s\in B\]
+\[Pr^M(s\vDash c\mu B)=Pr^{M'}(s\vDash FB)=0~si~s\in S
+\backslash(C\cup B)\]
+
+cas général ? Le pb est désormais de calculer 
+\[S_{=1}(FB)\] i.e. $\{s|Pr(s\vDash FB)=1\}$.\\
+\newpage 
+\noindent On a l'\textbf{équivalence} suivante:
+\begin{enumerate}
+    \item $Pr(s\vDash FB)=1$
+    \item $Post^*(t)\cap B\ne \emptyset$, $\forall t\in Post^*(s)$.
+    \item $s\in S\backslash Pre^*(S\backslash Pre^*(B))$.
+\end{enumerate}
+\noindent\textbf{Preuve:} $1.\implies 2.$ est clair. 
+$2.\implies 1.$ Une execution depuis $s$ finit avec proba 
+$1$ dans une CFCT. Celles ci étant de deux types. 
+\begin{enumerate}
+    \item Singleton dans B.
+    \item Cycle d'états dont aucun est dans B.
+\end{enumerate}
+(faut se rappeler que $Post^*(C)=C$) Pour tout état d'une
+CFCT, on a $t\in Post^*(C)$ donc $Post^*(t)\cap B\ne 0$.
+Donc on peut pas avoir une CFCT comme $2.$ donc la proba 
+d'avoir $G\neg B$ est nulle. $2. \equiv 3.$ 
+\[Post^*(t)\cap B\ne \emptyset~~~\forall t\in Post^*(s)\]
+\[\Leftrightarrow Post^*(s)\subseteq Pre^*(B)\]
+\[\Leftrightarrow Post^*(s)\cap S\backslash Pre^*(B)=\emptyset\]
+\[\Leftrightarrow s\notin Pre^*(S\backslash Pre^*(B))\]
+\[\Leftrightarrow s\in S\backslash Pre^*(S\backslash Pre^*(B))\]\qed
+\begin{cor}
+    Pour calculer $S_{=1}(c\mu B)$ on construit $M'$ 
+    puis on calcule $S\backslash Pre^*(S\backslash Pre^*(B))$.
+    Temps linéaire en $|M|$.
+\end{cor}
+
+
+
+
+
+    
+
 
 \end{document}

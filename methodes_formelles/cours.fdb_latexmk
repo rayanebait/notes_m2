@@ -1,8 +1,8 @@
 # Fdb version 3
-["pdflatex"] 1706608956 "/home/splash/files/notes_m2/methodes_formelles/cours.tex" "cours.pdf" "cours" 1706608957
+["pdflatex"] 1707813202 "/home/splash/files/notes_m2/methodes_formelles/cours.tex" "cours.pdf" "cours" 1707813203
   "/etc/texmf/web2c/texmf.cnf" 1699880471 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/home/splash/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1200.600pk" 1699881674 14040 2d1b4edb62e45bae180e732e889a1ebf ""
-  "/home/splash/files/notes_m2/methodes_formelles/cours.tex" 1706608956 8385 ade8ab40b547116844904cf8e6b2462e ""
+  "/home/splash/files/notes_m2/methodes_formelles/cours.tex" 1707813202 13255 821770046959a7a636801a163834136f ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/tcrm1200.tfm" 1136768653 1536 74b7293ec3713bb7fdca8dd1bd1f469c ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
@@ -38,6 +38,7 @@
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb" 1248133631 32734 69e00a6b65cedb993666e42eedb3d48f ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb" 1248133631 32726 0a1aea6fcd6468ee2cf64d891f5c43c8 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb" 1248133631 32569 5e5ddc8df908dea60932f3c484a54c0d ""
+  "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb" 1248133631 32587 1788b0c1c5b39540c96f5e42ccd6dae8 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb" 1248133631 32626 4f5c1b83753b1dd3a97d1b399a005b4b ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb" 1248133631 36118 fad905eba93cff5bce1e185fe980a177 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb" 1248133631 31764 459c573c03a4949a528c2cc7f557e217 ""
@@ -188,9 +189,9 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1644012257 39432 7155514e09a3d69036fac785183a21c2 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1699881570 165012 f177baa1c39a3ebd62c3096a43521a0d ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1699881580 1435838 4ef3ae04cb3ca6067ec31d101fdd4a70 ""
-  "cours.aux" 1706608957 1435 67036771c22419ea66fd55246ef04983 "pdflatex"
-  "cours.out" 1706608957 766 569ef212ce64c584ff1d45048cabec1d "pdflatex"
-  "cours.tex" 1706608956 8385 ade8ab40b547116844904cf8e6b2462e ""
+  "cours.aux" 1707813203 1435 f26692851b5e4f4c5235fb1891c8d1a5 "pdflatex"
+  "cours.out" 1707813203 766 569ef212ce64c584ff1d45048cabec1d "pdflatex"
+  "cours.tex" 1707813202 13255 821770046959a7a636801a163834136f ""
   (generated)
   "cours.aux"
   "cours.log"
