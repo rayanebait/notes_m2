@@ -458,6 +458,29 @@ avec $\Or_{Mac'}(m):$
 
 
 \section{Preuve à divulgation nulle}
+\href{http://crypto.cs.mcgill.ca/~crepeau/COMP647/2010/TOPIC03/FFS88.pdf}{Article de Fiat-Shamir},
+\href{http://crypto.cs.mcgill.ca/%7Ecrepeau/COMP647/Livre.pdf}{Livre de cours}.
+
+\newpage
+\section{Cryptographie Post-Quantique}
+
+\begin{defn}
+    Soit $(m,n,q)\in (\N^{\N^3})$ (indexée par $\lambda$).
+    Avec $n(\lambda)\leq m(\lambda)$. Soit $\psi$ une 
+    distribution sur $\Z_q$. On appelle le problème 
+    LWE le fait de distinguer $B,Bs+E$ et $B,t$ avec 
+    \[B\leftarrow\Z_q^{m\times n}\]
+    \[s\leftarrow\phi^n\]
+    \[e\leftarrow \phi^m\]
+    \[t\leftarrow \Z_q^m\]
+\end{defn}
+
+\textbf{Système}: On donne $t\leftarrow Bs+e$, ou 
+la clé publique est $(B,t)$ et la clé privée, $s$. 
+Le déchiffrement se fait par correction.
+
+
+
 
 
 \end{document}

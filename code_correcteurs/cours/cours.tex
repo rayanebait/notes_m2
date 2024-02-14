@@ -212,6 +212,41 @@ $Ker(\phi)=C|_{\F_q}$. Restreindre à $C$ et conclure.
 \begin{thm}[Delsarte]
     $(C|_{\F_q})^{\perp}=Tr(C^{\perp})$ et $(Tr(C))^{\perp}=C|_{\F_q}$.
 \end{thm}
-\textbf{Preuve:} 
+\textbf{Preuve:} a faire.
+
+\section{Reed-Solomon}
+\begin{defn}
+    Soit $x\in \F_q^n$, $(x_i)$ deux à deux distincts, avec $n\leq q$ et soit $k\leq n$.
+    Le code de Reed-Solomon associé à $x$ est 
+    \[RS_k(x):=\{c=(f(x_1),\ldots,f(x_n))|f\in \F_q[X]_{<k}\}\]
+\end{defn}
+\begin{prop}
+    Une matrice génératrice de $RS_k(x)$ est:
+    $\begin{pmatrix}
+        1 & 1&\ldots&1\\
+        x_1&x_2&\ldots&x_n\\
+        \vdots&\vdots&\ldots&\vdots\\
+        x_1^{k-1} & x_2^{k-1}\ldots&x_n^{k-1}\\
+    \end{pmatrix}$
+\end{prop}
+
+\begin{prop}
+    Les $RS$ sont MDS.
+\end{prop}
+\textbf{Preuve:} On regarde $\phi_{k,x}:\F_q[X]_{<k}\to \F_q^n$ qui 
+a $f$ associe $(f(x_i))_i$. Elle est injective, clair. 
+Soit maintenant, $c=(f(x_1),\ldots,f(x_n))\ne 0$. Alors $f\ne 0$ et 
+$f$ a au plus $k-1$ racines distinctes donc $|c|\geq n-k+1$ donc 
+$d_C\geq n-k+1$ or avec singleton, on a aussi $d_C\leq n-k+1$.
+\begin{defn}[GRS]
+    On regarde $x=(x_1,\ldots, x_n)\in \F_q^n$ avec $n\leq q$
+    et $(x_i)$ deux à deux distincts. Soit $y=(y_1,\ldots, y_n)\in\F_q^{*n}$.
+    On déf \[GRS_k(x,y)=\{c=(y_if(x_i))_{i\in [1,n]}|f\in \F_q[X]_{<k}\}\]
+\end{defn}
+\begin{prop}
+    A nouveau, les $GRS$ sont MDS.
+\end{prop}
+\textbf{Preuve:} Tous isomorphes, via une isométrie, à des $RS$. ($y_i$ sont non nuls)
+
 
 \end{document}

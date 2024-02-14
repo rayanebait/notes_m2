@@ -391,6 +391,99 @@ d'avoir $G\neg B$ est nulle. $2. \equiv 3.$
     Temps linéaire en $|M|$.
 \end{cor}
 
+Maintenant pour l'accessibilité répétée ? $GF B$?\\
+On a:
+\begin{enumerate}
+    \item $Pr(s\vDash GFB)=1$
+    \item $C\cap B\ne \emptyset$ pour toute CFCT $C$
+    atteignable depuis $s$.
+    \item $s\vDash AG~EF~B$ (CTL).
+\end{enumerate}
+Pour tous ces ensembles $S_{=1,0}$ on a pas utilisé 
+la valeur de la proba, juste $>0$! Y s'avére que 
+c'est vrai uniquement parce qu'on regarde des chaines 
+de Markov finies.\\ \indent Vérifier les props \textbf{qualitatives}
+peut nécessiter de regarder la valeur réelle.
+
+\section{PCTL, 2}
+\textbf{Syntaxe}:
+\begin{itemize}
+    \item $\phi_1,\phi_2:= T| a| \phi_1\wedge \phi_2|\neg \phi_1
+    P_J(\phi_l)$, avec $a\in AP$ et $J\subseteq [0,1]$, aux bornes rationelles.
+    \item $\phi_l:= X\phi_1|\phi_1\mu \phi_2 | \phi_1 \mu^{\leq n}\phi_2$
+\end{itemize}
+Ou aussi : $X, F=T\mu \phi$. On utilisera l'opérateur $G$.
+En pratique on se limite à $J=[0,1],[0,p[,[p;1], ]p;1]$. (P est 
+pas une probabilité.)
+
+\begin{itemize}
+    \item Pour $G$: 
+    $P_{\leq \alpha}(G\phi)=P_{\geq 1-\alpha}(F\neg\phi)$
+    \item $G^{\leq n}\phi=\phi$ est vraie pour les $n+1$
+    premier états. 
+    \[P_{\leq \alpha}(G^{\leq n}\phi)=
+    P_{\geq 1-\alpha}(F^{\leq n}\neg \phi)\]
+\end{itemize}
+\textbf{Sémantique}:
+\begin{itemize}
+    \item $M=(S,s_0, P, l)$ une chaine de Markov.
+    \item $s\vDash T$ toujours
+    \item $s\vDash e$ ssi $e\in l(s)$
+    \item $s\vDash \phi_1\wedge \phi_2$ ssi ($s\vDash \phi_1~et~s\vDash \phi_2$)
+    \item $s\vDash \neg \phi_1$ ssi $s\nvDash \phi_1$
+    \item $s\vDash P_J(\phi_l)$ ssi $Pr(s\vDash \phi_l)\in J$
+    i.e. $Pr\{\phi\in Path(s)|\pi\vDash \phi_l\}$.
+    \item $\pi\vDash X\phi_1$ ssi $\pi(1)\vDash \phi_1$
+    \item $\pi\vDash \phi_1\mu \phi_2$ ssi $\exists i\geq 0$
+    ($\pi(i)\vDash \phi_2 \wedge \forall 0\leq j<i, \pi(j)\vDash \phi_1$)
+    \item $\pi\vDash \phi_2\mu^{\leq n}\phi_2$ ssi 
+    $\exists 0\leq i\leq n$, $\pi(i)\vDash \phi_2 \wedge 
+    (\forall 0\leq j<i,~\pi(j)\vDash \phi_1)$
+
+\end{itemize}
+
+Equivalence de formules: $\forall M$, $\forall s$,
+ $M,s\vDash \phi_1\Leftrightarrow M,s\vDash \phi_2$.
+
+\begin{prop}
+    $\alpha\in[0,1]$, 
+    $P_{<\alpha}(\phi)\equiv \neg P_{\geq \alpha}(\phi)$
+\end{prop}
+
+\noindent \textbf{Model Checking}:
+Pour $M$ finie, $M\vDash \phi$. On fait comme pour CTL,
+on vérifie fait un récursion sur les sous formules.\\
+\begin{itemize}
+    \item Changements:
+    \begin{itemize}
+        \item $P_{\sim\alpha}(X\phi)$
+        \item $P_{\sim\alpha}(\phi_1\mu\phi2)$
+        \item $P_{\sim\alpha(\phi_1\mu^{\leq n}\phi_2)}$
+    \end{itemize}
+\end{itemize}
+On déf $Sat(\phi)$ les états de $M$ qui vérifient $\phi$.
+\begin{itemize}
+    \item Calcul de: $Sat(P_{\sim\alpha}(X\phi))$
+    \item $Pr(s\vDash X\phi)=\sum_{s'\in Sat(\phi)}P(s,s')$
+    \item Reste à comparer avec $\sim\alpha$
+    \item Calcul de $Sat(P_{\sim\alpha}(\phi_1\mu\phi_2))$
+    \item Calculer $Sat(\phi_1,2)$
+    \item Construire $M'$ avc les états de $\neg\phi_1\wedge 
+    \neg\phi_2$ et $\phi_2$
+    \item Reste à calculer les probas d'atteindre 
+    $Sat(\phi_2)$ depuis tout état de $M'$. $"FSat(\phi_2)"$
+    \item Calcul de $Sat(P_{\sim\alpha}(\phi_1\mu^{\leq n}\phi_2))$ 
+    \item Calculer $Sat(\phi_1,2)$
+    \item Calculer $M'$ avec les états $\neg\phi_1\wedge \neg \phi_2$ ou 
+    $\phi_2$ sont absorants(ou comme union, 
+    $Sat(\neg\phi_1\wedge \neg\phi_2)\cup Sat(\phi_2)$). 
+    \item $M'=(S,s_0,P',l)$.
+    \item Calculer $P'*P'\ldots*P'$ avec $n$ termes.
+\end{itemize}
+
+\noindent \textbf{Conclusion}: Le modèle checking est 
+en temps $\Or(poly(|M|).|\phi|.n_{max}$), avec 
+$n_{max}$ le plus grand $n$ de $\mu^{n}$ apparaissant.
 
 
 
