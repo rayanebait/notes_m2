@@ -1,0 +1,73 @@
+\documentclass[12pt]{article}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{hyperref, pagecolor, mdframed}
+\usepackage{graphicx, amsmath, latexsym, amsfonts, amssymb, amsthm,
+amscd, geometry, xspace, enumerate, mathtools}
+\usepackage{tikz}
+
+\theoremstyle{plain}
+\newtheorem{thm}[subsubsection]{Th\'eor\`eme}
+\newtheorem{lem}[subsubsection]{Lemme}
+\newtheorem{prop}[subsubsection]{Proposition}
+\newtheorem{propr}[subsubsection]{Propri\'et\'e}
+\newtheorem{cor}[subsubsection]{Corollaire}
+\newtheorem{intro}[section]{Introduction}
+\newtheorem{thm2}[subsection]{Th\'eor\`eme}
+\newtheorem{lem2}[subsection]{Lemme}
+\newtheorem{prop2}[subsection]{Proposition}
+\newtheorem{propr2}[subsection]{Propri\'et\'e}
+\newtheorem{cor2}[subsection]{Corollaire}
+
+\theoremstyle{definition}
+\newtheorem{defn}[subsubsection]{D\'efinition}
+\newtheorem{rmq}[subsubsection]{Remarque}
+\newtheorem{conj}[subsubsection]{Conjecture}
+\newtheorem{exmp}[subsubsection]{Exemples}
+\newtheorem{quest}[subsubsection]{Exercices}
+\newtheorem{defn2}[subsection]{D\'efinition}
+\newtheorem{rmq2}[subsection]{Remarque}
+\newtheorem{conj2}[subsection]{Conjecture}
+\newtheorem{exmp2}[subsection]{Exemples}
+\newtheorem{quest2}[subsection]{Exercices}
+
+\theoremstyle{remark}
+\newtheorem{rem}{Remarque}
+\newtheorem{note}{Note}
+
+\newcommand{\M}{\mathcal{M}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\Or}{\mathcal{O}}
+\newcommand{\gr}{\color{Sepia}}
+\newcommand{\rg}{\color{Red}}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=Green,
+    filecolor=RoyalPurple
+}
+
+\definecolor{wgrey}{RGB}{148, 38, 55}
+
+
+\title{Cryptographie}
+\date{26 septembre 2023}
+\begin{document}
+\maketitle
+\section{Prange}
+$t\in [0,n'-n/q]$
+\begin{enumerate}
+    \item Répéter:
+    \[\pi\leftarrow S_n\]
+    \[H'\leftarrow \pi(H)\]
+    \[H''\leftarrow Elimination~Gaussienne~sur~les~lignes~de~H'\]
+    $H''=R||Id_{n-t}$, $e''=\pi(e)$
+    \item On suppose que $e''_k=0$
+\end{enumerate}
+
+
+\end{document}
