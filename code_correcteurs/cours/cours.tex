@@ -248,5 +248,61 @@ $d_C\geq n-k+1$ or avec singleton, on a aussi $d_C\leq n-k+1$.
 \end{prop}
 \textbf{Preuve:} Tous isomorphes, via une isométrie, à des $RS$. ($y_i$ sont non nuls)
 
+\begin{thm}[$q<=n$]
+    L'orthogonal de $RS_q(x)$ est $RS_{q-k}(x)$.
+\end{thm}
+\textbf{preuve a faire}: (produit scalaire)
+
+\begin{thm}
+    Maintenant si $x\in \F_q^n$ tq les $x_i$ sont deux 
+    à deux distincts et $y\in (\F_q^*)^{n}$. Alors,
+    \[GRS_k(x,y)^{perp}=GRS_{n-k}(x,y')\]
+    avec $y_i'=\frac{-1}{y_i\prod_{i\ne j}(x_i-x_j)}$
+\end{thm}
+\textbf{Preuve:} Noter $Q(\alpha)=\prod_{\alpha\ne x_i}(x-\alpha)$.
+Alors $y_i'=Q(x_i)/y_i$. Puis 
+\[
+    <(y_if(x_i))_i, y_i'g(x_i)>=\sum_{\alpha\in \F_q} Q(\alpha)f(\alpha)g(\alpha)
+\]
+Et on se ramène au $RS$ normal.
+
+\subsection{Décodeurs uniques}
+-Berlekamp-Welch: interpolation.\\
+-Euclide etendu: Berlekamp-Massey (vision BCH).\\
+
+On corrige au plus $[(n-k)/2]$ erreur.
+
+\subsection{Décodage en liste}
+A part quelques exception, les codes sont généralement
+pas parfait (on atteint pas la borne de Hamming). On a 
+meme souvent que l'union des boules centrées sur le code
+de rayon $t=(d_C-1)/2$ ne représentent qu'une petite partie 
+de l'espace ambiant. On peut généralement décoder au 
+delà de $(d_C-1)/2$.\\
+
+\textbf{Idée:} On va décoder au delà de $[(d_C-1)/2]$.
+Généralement on a seul mot dans la liste de décodage.
+Si on en a plusieurs, on teste lequel est le plus proche 
+du mot reçu.Pour que le décodeur reste en temps polynomial
+, il faut que la liste soit de taille polynomiale.
+
+\begin{thm}[Borne de Johnson]
+    Soit $C$ un $[n,Rn, \delta n]_q$ un code linéaire. 
+    Pour $R,\delta$ des constantes. Soit 
+    \[\rho =(1-\frac{1}{q})\left(1-\sqrt{1-\frac{q\delta}{q-1}}\right)\]
+    Alors $\forall a\in \F_q^n$,
+    \[\#(B(y,\rho n)\cap C)\leq q\delta n^2\]
+\end{thm}
+
+\begin{rem}
+    Pour $q=2$, \[\rho=\frac{1}{2}(1-\sqrt{1-2\delta})\]\\
+    Pour $q\to \infty$, on a 
+    \[\rho=(1-\sqrt{1-\delta})\]
+    En particulier, pour un GRS, lorsque $n\to\infty$
+    et donc $q\to \infty$, on a 
+    \[\rho=1-\sqrt{R}\] 
+\end{rem}
+
+
 
 \end{document}
