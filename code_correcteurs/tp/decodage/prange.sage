@@ -8,8 +8,8 @@
 from sage.coding.code_bounds import entropy, entropy_inverse
 import random
 
-n=20
-k=10
+n=30
+k=20
 p=2
 m=1
 q=p^m
@@ -51,19 +51,26 @@ def Prange(H,s,n,k,w):
 	for j in J:
 		e[j]=e_[i]
 		i=i+1
-	print(count)
-	return e
+	#print(count)
+	return (e,count)
 
 K.<t>=GF(q)
 M=MatrixSpace(K,n-k,n)
-H=M.random_element()
-print(H,"t_max=", t_max)
+#print(H,"t_max=", t_max)
 
-w=random.randint(1,t_max)
+#w=random.randint(1,t_max)
 
-e=vector(K, [1 for i in range(t_max)]+[0]*(n-t_max))
-random.shuffle(e)
+#print(e,'\n',e_,'\n',e==e_)
 
-e_=Prange(H,H*e,n,k,t_max)
+average_it=1
+for i in range(100):
+	H=M.random_element()
+	e=vector(K, [1 for i in range(t_max)]+[0]*(n-t_max))
+	random.shuffle(e)
 
-print(e,e_)
+	(e_,i)=Prange(H,H*e,n,k,t_max)
+	average_it=average_it+i
+	
+average_it=float(average_it/20)
+print(average_it)
+
