@@ -485,10 +485,158 @@ On déf $Sat(\phi)$ les états de $M$ qui vérifient $\phi$.
 en temps $\Or(poly(|M|).|\phi|.n_{max}$), avec 
 $n_{max}$ le plus grand $n$ de $\mu^{n}$ apparaissant.
 
+\section{PCTL, 0/1}
+
+On considère que les intervalles: $<1,>0, =1,=0$.
+On veut comparer PCTL, 0/1 et CTL. Comme dans le td.
+\begin{itemize}
+    \item En général, incomparables. (y'a des trucs qu'on 
+    peut faire dans l'un et pas dans l'autre)
+    \item Dans le cas des chaines finies, $PCTL_{0/1}\subset 
+    CTL$!
+\end{itemize}
+Exemples simples: \[
+    P_{>0}(a\mu b)=Ea\mu b\]
+    \[P_{>0}X(a)=EXa\]
+    \[P_{=1}X(a)=AXa
+\]
+Par contre
+\[
+    P_{=1}(a\mu b)=?
+\]
+ca dépend. Cas général(CM infinies):
+\begin{enumerate}
+    \item Il n'existe pas d'équivalent CTL à $P_{=1}F(a)$
+    ($P_{>0}(Ga)$).\\
+On peut regarder $\N$ ou $x_n=p*x_{n+1}+(1-p)x_{n-1}$ 
+et $x_0=(1-p)x_0+p*x_1$. La structure de Kripke (CTL)
+sous jacente ne depend pas de $p$ et si $p<1/2,>1/2$ 
+on a un comportement différent: 
+\[
+    P_{=1}F0
+\]
+    \item Il n'existe pas d'équivalent $PCTL_{0/1}$ 
+    à $AFa,EGa$. 
+\end{enumerate}
+
+Dans les chaines de Markov finies, on a:
+\[
+    P_{=1}A(EFa)Wa
+    \]
+Où $W=Weak~until$, s'exprime dans CTL (simplement 
+on a pas $a$ sur tout le chemin comme $a\mu b$ je crois).
+
+\subsection{bisimulation, syst.classiques}
+\begin{itemize}
+    \item 2 structures de Kripke: $K_1=(S_1, \to_1, s_0^1, l_1)$
+    $K_2=(S_2, \to_2, s_0^2, l_2)$.
+    \item Une relation $R\subset S_1\times S_2$ est une 
+    bisimulation ssi $\forall(s_1,s_2)\in R$:
+    \begin{enumerate}
+        \item $l_1(s_1)=l_2(s_2)$
+        \item $\forall s_1\to_1 s_1'$, $\exists s_2\to_2 s_2'$ t.q
+        $(s_1',s_2')\in R$
+        \item $\forall s_2\to_2 s_2'$, $\exists s_1\to_1 s_1'$ t.q
+        $(s_1',s_2')\in R$
+    \end{enumerate}
+\end{itemize}
+
+Mauvaise def:
+\begin{defn}[$M_1=(S_1, P_1, s_0^1,l_1)$,$M_2=\ldots$]
+    Une bisimulation probabiliste sur $M_1\times M_2$ est 
+    une relation d'équivalence $R\subseteq S_1\times S_2$
+    t.q pour tout $(s_1,s_2)\in R$, on a: 
+    \begin{enumerate}
+        \item $l_1(s_1)=l_2(s_2)$
+        \item $P_1(s_1, T)=P_2(s_2, T)$
+    \end{enumerate}
+\end{defn}
+Bonne def:
+\begin{defn}[$M=(S, P, s_0,l)$]
+    Une bisimulation probabiliste sur $M$ est 
+    une relation d'équivalence $R\subseteq S\times S$
+    t.q pour tout $(s_1,s_2)\in R$, on a: 
+    \begin{enumerate}
+        \item $l(s_1)=l(s_2)$
+        \item $P(s_1, T)=P(s_2, T)$
+    \end{enumerate}
+\end{defn}
+\begin{thm}
+    $s_1\sim s_2\equiv s_1~et~s_2$ vérifient les mêmes
+    formules de PCTL!    
+\end{thm}
+(Chaine quotient ! on prend $\overline{P}=\#classe*P$)
 
 
+\newpage
+\section{Processus de décision de Markov(MDP)}
+On a maintenant et des choix non déterministes et des probas.
+(Mélanges des deux d'avants).\\
 
-    
+\begin{defn}
+    Un MDP, $M=(S,s_0, Act, Pr, l)$:
+    \begin{itemize}
+        \item $Act=$ ensemble fini d'actions
+        \item $Pr:S\times Act\times S\to [0,1]$ tq 
+        $\forall s\forall \alpha\in Act$, 
+        \[\sum_{t\in S}\Pr(s,\alpha, t)\in\{0,1\}\]
+    \end{itemize}
+\end{defn}
+
+\textbf{Notation:}
+\begin{itemize}
+    \item Une action $\alpha$ est "tirable" ou 
+possible depuis un état $s$ ssi $\sum_{t\in S}Pr(s,\alpha,t)=1$
+    \item $Act(s)=$ actions possibles depuis $s$
+    \item $Supp(M)=\{s|Act(s)\ne\emptyset\}$
+    \item Si $Pr(s, \alpha, t)>0$ on dit que 
+$t$ est un $\alpha$-successeur de $s$.
+\end{itemize}
+
+Comme pour les chaines de Markov, on définit la
+structure de Kripke $K_M$ avec $K_M=(S,s_0,\to, l)$ 
+ou cette fois $s\to s'$ ssi $\exists \alpha\in Act(s)$
+tq $Pr(S,\alpha, s')>0$. De même on définit les chemins 
+avec les actions.
+
+
+($S^+$ l'ensemble des séquences finies de $S$)
+(Ici le Scheduler se souvient de la ou il passe pour déterminer 
+les actions d'après)
+\begin{defn}
+    Un scheduler pour $M$ est une fct $\sigma:S^+\to Act$
+    tq $\sigma(s_0\ldots s_n)\to Act(s_n)$
+\end{defn}
+
+\begin{prop}
+    La donnée d'un MDP et d'un scheduler est une chaine de 
+    Markov! $M_{\sigma}=(S', s_0, P, l')$:
+    \begin{itemize}
+        \item $S'=S^+$
+        \item $P(s', t)=Pr(s_n,\sigma(s'), t)$
+    \end{itemize}
+\end{prop}
+
+-Les Scheduler sans mémoire: 
+\begin{defn}
+    $\sigma:S\to Act$, 
+\end{defn}
+
+-Les Scheduler à mémoire finie:
+\begin{defn}
+    $\sigma=(Q, q_0, \Delta, act):$
+    \begin{itemize}
+        \item $\Delta: Q\times S\to Q$
+        \item $act:Q\times S\to Act$ tq 
+        \[act(q,s)=\text{Donne l'action à jouer depuis l'état s
+        de la MDP lorsque la  mémoire est dans le mode q}\]
+        \[\Delta(q,s)=\text{Le prochain état de la mémoire}\]
+    \end{itemize}
+\end{defn}
+
+-Les Scheduler randomisés: Cette fois on va de $S^+->Dist(Act)$
+On associe des probabilités d'avoir une action
+
 
 
 \end{document}

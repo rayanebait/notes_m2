@@ -8,8 +8,8 @@
 from sage.coding.code_bounds import entropy, entropy_inverse
 import random
 
-n=30
-k=20
+n=100
+k=floor(n/2)
 p=2
 m=1
 q=p^m
@@ -63,14 +63,20 @@ M=MatrixSpace(K,n-k,n)
 #print(e,'\n',e_,'\n',e==e_)
 
 average_it=1
-for i in range(100):
-	H=M.random_element()
-	e=vector(K, [1 for i in range(t_max)]+[0]*(n-t_max))
-	random.shuffle(e)
 
-	(e_,i)=Prange(H,H*e,n,k,t_max)
-	average_it=average_it+i
+#for i in range(100):
+H=M.random_element()
+print(H)
+e=vector(K, [1 for i in range(t_max)]+[0]*(n-t_max))
+random.shuffle(e)
+print(e)
+print(H*e)
+
+(e_,i)=Prange(H,H*e,n,k,t_max)
+average_it=average_it+i
+
+print(vector(K,e_)==e)
 	
-average_it=float(average_it/20)
+#average_it=float(average_it/20)
 print(average_it)
 
