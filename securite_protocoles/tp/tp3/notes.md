@@ -32,3 +32,6 @@ openssl x509 -signkey pkey.pem -in domain.csr -req -days 365 -out domain.crt
 SERVEUR TLS PYTHON:
 page d'oborichkin (tls server)
 
+FTP ANONYME:
+nmap --script ftp-anon (le serveur n'a pas de mdp! pas besoin de copier son cert)
+https://nmap.org/nsedoc/scripts/ftp-anon.html

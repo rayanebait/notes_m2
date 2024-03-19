@@ -638,5 +638,284 @@ les actions d'après)
 On associe des probabilités d'avoir une action
 
 
+\subsection{}
+Approche alternative pour l'analyse des MDP.
+\begin{itemize}
+    \item Objectif: obtenir un algo qui permet d'avoir 
+    un intervalle de proba.
+    \item Idée: On va remplacer le MDP $M$ par un MDP 
+    $M^{min}$ (ou $M^{max}$) ayant une structure particuliere 
+    qui permet le calcul des intervalles de probas (et qui 
+    conservent les probas min/max).
+\end{itemize}
+
+Décomposition d'un MDP en MEC (Maximal End Component).
+\begin{defn}[End Component]
+    $M=(S,s_0,Act, P, l)$ une MDP,
+    \begin{enumerate}
+        \item une sous-MDP de $M$ est défini par un $S'
+        \subseteq S$ et $Act'$ t.q $S'\ne \emptyset$
+        ($\forall s\in S',~Act'(s)\subseteq Act(s)$)
+        \item $(S',Act')$ est un End Component ssi 
+        $\forall s\in S'$, $\forall \alpha\in Act'(s)$
+        on a $\forall t\in S, P(s,\alpha,t)>0\implies t\in S'$.
+    \end{enumerate}
+\end{defn}
+
+\begin{itemize}
+    \item On autorise les EC de la forme $(\{s\}, \emptyset)$.
+    \item Etant données deux EC $(S_1, Act_1)$, $(S_2, Act_2)$,
+    d'une MDP $M$:
+    \begin{enumerate}
+        \item $(S_1, Act_1)\leq (S_2, Act_2)$ si $S_1\subseteq S_2$
+        et $\forall s\in S_1$, $Act_1(s)\subseteq Act_2(s)$
+        \item Si $S_1\cap S_2\ne \emptyset$, alors 
+        \[(S_1\cup S_2, Act_1\cup Act_2)\]
+        est un EC. (y'a de la transitivité)
+    \end{enumerate}
+    \item On a une notion de Maximal EC (1.).
+    \item deux MEC ne partagent pas d'état $(2.)$. Cela 
+    définit une partition de l'ensemble $S$.
+\end{itemize}
+
+On distingue $3$ types de MEC:
+\begin{enumerate}
+    \item Les TMEC: Trivial MEC$\to$$(\{s\}, \emptyset)$.
+    \item Les BMEC: BottomMEC/TerminalMEC$\to$$(S',Act')$
+    t.q $Act'$ est maximal (donne même actions que $Act$)
+    \item Les autres.
+\end{enumerate}
+
+%https://q.uiver.app/#q=WzAsNyxbNCw1LCIodSkiXSxbNiw1LCIodikiXSxbMCwzLCIocykiXSxbMiwzLCIocycpIl0sWzQsMSwiKHMrKSJdLFs0LDMsIih0KSJdLFs1LDAsIihzKykiXSxbMSwwLCJcXGFscGhhIiwwLHsiY3VydmUiOjN9XSxbMCwxLCJcXGFscGhhIiwwLHsiY3VydmUiOjN9XSxbNSw0LCIwLjIsXFxhbHBoYSJdLFs1LDMsIjAuNSxcXGFscGhhIiwyXSxbNSwwLCIwLjMsXFxhbHBoYSIsMV0sWzMsMCwiMC41LFxcYmV0YSIsMSx7ImN1cnZlIjoyfV0sWzMsNCwiMC41LFxcYmV0YSIsMV0sWzIsMywiXFxhbHBoYSIsMix7ImN1cnZlIjoyfV0sWzMsMiwiXFxhbHBoYSIsMix7ImN1cnZlIjoyfV0sWzQsNiwibG9vcCIsMix7ImN1cnZlIjozfV0sWzYsNCwibG9vcCIsMix7ImN1cnZlIjo0fV1d
+% \[\begin{tikzcd}
+% 	&&&&& {(s+)} \\
+% 	&&&& {(s+)} \\
+% 	\\
+% 	{(s)} && {(s')} && {(t)} \\
+% 	\\
+% 	&&&& {(u)} && {(v)}
+% 	\arrow["\alpha", curve={height=18pt}, from=6-7, to=6-5]
+% 	\arrow["\alpha", curve={height=18pt}, from=6-5, to=6-7]
+% 	\arrow["{0.2,\alpha}", from=4-5, to=2-5]
+% 	\arrow["{0.5,\alpha}"', from=4-5, to=4-3]
+% 	\arrow["{0.3,\alpha}"{description}, from=4-5, to=6-5]
+% 	\arrow["{0.5,\beta}"{description}, curve={height=12pt}, from=4-3, to=6-5]
+% 	\arrow["{0.5,\beta}"{description}, from=4-3, to=2-5]
+% 	\arrow["\alpha"', curve={height=12pt}, from=4-1, to=4-3]
+% 	\arrow["\alpha"', curve={height=12pt}, from=4-3, to=4-1]
+% 	\arrow["loop"', curve={height=18pt}, from=2-5, to=1-6]
+% 	\arrow["loop"', curve={height=24pt}, from=1-6, to=2-5]
+% \end{tikzcd}\]
+
+Le problème qu'on veut: $Fs$? On le résout depuis chaque MEC facilement.
+On a une partition de $S$ données par les $BMEC,TMEC,autres$(Leurs états).
+
+\textbf{Algorithme pour déterminer les MEC de $M$:}
+\begin{itemize}
+    \item input: $M$.
+    \item output: ensemble des MEC de $M$.
+\end{itemize}
+On fait :
+\begin{itemize}
+    \item $P=Pile$
+    \item $P.push((S, Act))$ (init avec M)
+    \item $S_{MEC}=\emptyset$
+    \item Tant que $P\ne \emptyset$:
+    \begin{itemize}
+        \item $(S', Act'):= P.pop()$
+        \item Pour $s\in S'$ et $\alpha\in Act'(s)$:
+        \begin{itemize}
+            \item Pour $t\in S$ t.q. $P(s,\alpha, t)>0$:
+            \item si $t\notin S'$ alors $Act'(s)=Act'(s)\backslash\{\alpha\}$.
+        \end{itemize}
+        \item Calculer les $CFC$ du graphe $(S', Act')\to (S_1,\ldots, S_k)$.
+        \item Si $k>1$ alors:
+        \begin{itemize}
+            \item Pour $i=1$ à $k$:
+            \item $P.push((S_i, Act'))$
+        \end{itemize}
+        \item Sinon: $SMEC+=\{(S',Act')\}$
+    \end{itemize}
+    \item Retourne $SMEC$
+\end{itemize}
+
+Pour la MDP de quiver:
+\begin{itemize}
+    \item $(S,Act)$
+    \item nettoyage de $Act$, ok.
+    \item $CFC$ du graphe $\{s,s'\}$, $\{u,v\}, \{s+\}, \{t\}$
+    \item $P:~(\{s,s'\},Act), (\{u,v\},Act), (\{s+\}, Act), (\{t\},Act)$
+    \item $(\{s,s'\}, Act)\to$ supprimer $\beta$ depuis $S'$, $\to$ MEC$=(\{s,s'\},Act')$
+\end{itemize}
+
+\subsection{Décomposition pour MIN}
+\textbf{"Min-Réduction"}\\
+
+(Apparemment probabilité nulle sur les états des 
+BMEC, S\_k, ducoup on les fusionne en $s-$)
+\begin{defn}
+    $M=(S,s_0,Act, P,l)$ et $S=\bigcup_{m=0}^{M}B_m\cup\bigcup_{l=1}^{L}\{t_l\}\cup\bigcup_{k=1}^{K}S_k$:
+    \[\tilde{S}=\{S+, t_1,\ldots,t_L,s-\}\]
+    \[\tilde{Act}(s+)=\{loop\}=\tilde{Act}(s-)\]
+    \[\tilde{Act}(t_i)=Act(t_i)\]
+    Pour les probas:
+    \[\tilde{P}(s+, loop, s+)=1=\tilde{P}(s-,loop, s-)\]
+    \[\forall\alpha\in Act(t_i):~\tilde{P}(t_i, \alpha, t_j)=P(t_i,loop, t_j)\]
+    \[\forall\alpha\in Act(t_i):~\tilde{P}(t_i, \alpha, s+)=P(t_i,loop, s+)\]
+    \[\tilde{P}(t_i, \alpha, s_i)=\sum_{k=1}^{K}P(t_i,\alpha, s_k)+\sum_{m=1}^{M}P(t_i, \alpha, B_m)\]
+\end{defn}
+(Rappel: $P(t,\alpha, U)=\sum_{u\in U} P(t,\alpha, u)$)
+C'est la décomposition MIN de celle de tout à l'heure.
+% https://q.uiver.app/#q=WzAsNSxbMCw1LCIocy0pIl0sWzAsMSwiKHMrKSJdLFswLDMsIih0KSJdLFsxLDAsIihzKykiXSxbMiw1LCIocy0pIl0sWzIsMSwiMC4yLFxcYWxwaGEiXSxbMiwwLCIwLjUrMCswLjMrMD0wLjgsXFxhbHBoYSIsMV0sWzEsMywibG9vcCwgMSIsMix7ImN1cnZlIjozfV0sWzMsMSwibG9vcCwgMSIsMix7ImN1cnZlIjo0fV0sWzQsMCwibG9vcCwxIiwwLHsiY3VydmUiOjN9XSxbMCw0LCJsb29wLDEiLDAseyJjdXJ2ZSI6M31dXQ==
+% \[\begin{tikzcd}
+% 	& {(s+)} \\
+% 	{(s+)} \\
+% 	\\
+% 	{(t)} \\
+% 	\\
+% 	{(s-)} && {(s-)}
+% 	\arrow["{0.2,\alpha}", from=4-1, to=2-1]
+% 	\arrow["{0.5+0+0.3+0=0.8,\alpha}"{description}, from=4-1, to=6-1]
+% 	\arrow["{loop, 1}"', curve={height=18pt}, from=2-1, to=1-2]
+% 	\arrow["{loop, 1}"', curve={height=24pt}, from=1-2, to=2-1]
+% 	\arrow["{loop,1}", curve={height=18pt}, from=6-3, to=6-1]
+% 	\arrow["{loop,1}", curve={height=18pt}, from=6-1, to=6-3]
+% \end{tikzcd}\]
+
+%La semaine dernière y ont montré qu'il existe un scheduler
+%qui réalise la proba min
+\begin{prop}
+    $\forall M, \forall s\in S$, on a 
+    \[Pr_M^{min}(s\vDash Fs+)=Pr_{M^{min}}^{min}(\tilde{s}\vDash Fs+)\] 
+\end{prop}
+\textbf{Preuve:} En gros on a un scheduler $\sigma$ qui réalise
+la proba min dans $M$. On en déduit un $\tilde{\sigma}$ qui 
+lui correspond. Pour les états fusionnés, la proba min
+est 0 avec loop, c'est ok. Pour les autres, on joue la 
+meme section dans $M$ et dans $M^{min}$(Le truc c'est que 
+c'est inversible).\qed
+
+Dans notre cas: $Pr^{min}(t\vDash Fs+)=0.2$.\\
+Un autre exemple: (En commentaire dans le tex)\\
+% https://q.uiver.app/#q=WzAsMTAsWzAsMSwic18wIl0sWzIsMSwic18xIl0sWzQsMSwic18yIl0sWzYsMSwicysiXSxbMiwzLCJzXzMiXSxbMCwzLCJzXzUiXSxbNCwzLCJzXzQiXSxbMCwwLCJcXGJ1bGxldCJdLFsyLDAsIlxcYnVsbGV0Il0sWzYsMCwiXFxidWxsZXQiXSxbMCwxLCIxLzIsXFxhbHBoYSIsMV0sWzEsMiwiMS8yIiwxXSxbMiwzLCIzLzQiLDFdLFs2LDMsIjEvMixcXGJldGEiLDEseyJjdXJ2ZSI6Mn1dLFs0LDMsIjIvMyxcXGJldGEiLDFdLFs0LDYsIjEsXFxhbHBoYSIsMV0sWzYsNCwiMSxcXGFscGhhIiwxLHsiY3VydmUiOi0yfV0sWzQsNSwiMS8zLFxcYmV0YSIsMV0sWzAsNCwiMS8yLFxcYmV0YSIsMV0sWzAsNSwiMS8yLFxcYmV0YSIsMV0sWzIsNSwiMS80IiwxLHsiY3VydmUiOi0yfV0sWzYsNSwiMS8yLFxcYmV0YSIsMSx7ImN1cnZlIjotNX1dLFswLDcsIjEvMixcXGFscGhhIiwxXSxbNywwLCIiLDEseyJjdXJ2ZSI6Mn1dLFsxLDgsIjEvMixcXGFscGhhIiwxXSxbOCwxLCIiLDEseyJjdXJ2ZSI6Mn1dLFszLDksImxvb3AiLDFdLFs5LDMsIiIsMSx7ImN1cnZlIjoyfV1d
+% \[\begin{tikzcd}
+% 	\bullet && \bullet &&&& \bullet \\
+% 	{s_0} && {s_1} && {s_2} && {s+} \\
+% 	\\
+% 	{s_5} && {s_3} && {s_4}
+% 	\arrow["{1/2,\alpha}"{description}, from=2-1, to=2-3]
+% 	\arrow["{1/2}"{description}, from=2-3, to=2-5]
+% 	\arrow["{3/4}"{description}, from=2-5, to=2-7]
+% 	\arrow["{1/2,\beta}"{description}, curve={height=12pt}, from=4-5, to=2-7]
+% 	\arrow["{2/3,\beta}"{description}, from=4-3, to=2-7]
+% 	\arrow["{1,\alpha}"{description}, from=4-3, to=4-5]
+% 	\arrow["{1,\alpha}"{description}, curve={height=-12pt}, from=4-5, to=4-3]
+% 	\arrow["{1/3,\beta}"{description}, from=4-3, to=4-1]
+% 	\arrow["{1/2,\beta}"{description}, from=2-1, to=4-3]
+% 	\arrow["{1/2,\beta}"{description}, from=2-1, to=4-1]
+% 	\arrow["{1/4}"{description}, curve={height=-12pt}, from=2-5, to=4-1]
+% 	\arrow["{1/2,\beta}"{description}, curve={height=-30pt}, from=4-5, to=4-1]
+% 	\arrow["{1/2,\alpha}"{description}, from=2-1, to=1-1]
+% 	\arrow[curve={height=12pt}, from=1-1, to=2-1]
+% 	\arrow["{1/2,\alpha}"{description}, from=2-3, to=1-3]
+% 	\arrow[curve={height=12pt}, from=1-3, to=2-3]
+% 	\arrow["loop"{description}, from=2-7, to=1-7]
+% 	\arrow[curve={height=12pt}, from=1-7, to=2-7]
+% \end{tikzcd}\]
+
+Les MEC: $(\{s+\}, loop), (\{s_5\},loop),
+ (\{s_1\},\emptyset), (\{s_2\}, \emptyset), (\{s_3, s_4\}, (s_3\to\alpha, s_4\to\alpha))$
+
+% https://q.uiver.app/#q=WzAsOSxbMCwxLCJzXzAiXSxbMiwxLCJzXzEiXSxbNCwxLCJzXzIiXSxbNiwxLCJzKyJdLFswLDAsInNfMCJdLFsyLDAsInNfMSJdLFs2LDAsInMrIl0sWzIsMywicy0iXSxbMiw0LCJzLSJdLFswLDEsIjEvMixcXGFscGhhIiwxXSxbMSwyLCIxLzIsIFxcYWxwaGEiLDFdLFsyLDMsIjMvNCIsMV0sWzAsNCwiMS8yLFxcYWxwaGEiLDFdLFs0LDAsIiIsMSx7ImN1cnZlIjoyfV0sWzEsNSwiMS8yLFxcYWxwaGEiLDFdLFs1LDEsIiIsMSx7ImN1cnZlIjoyfV0sWzMsNiwibG9vcCIsMV0sWzYsMywiIiwxLHsiY3VydmUiOjJ9XSxbMCw3LCIxLFxcYmV0YSIsMV0sWzIsNywiMS80IiwxXSxbNyw4XSxbOCw3LCJsb29wIiwxLHsiY3VydmUiOjJ9XV0=
+%  \[\begin{tikzcd}
+%      {s_0} && {s_1} &&&& {s+} \\
+%      {s_0} && {s_1} && {s_2} && {s+} \\
+%      \\
+%      && {s-} \\
+%      && {s-}
+%      \arrow["{1/2,\alpha}"{description}, from=2-1, to=2-3]
+%      \arrow["{1/2, \alpha}"{description}, from=2-3, to=2-5]
+%      \arrow["{3/4}"{description}, from=2-5, to=2-7]
+%      \arrow["{1/2,\alpha}"{description}, from=2-1, to=1-1]
+%      \arrow[curve={height=12pt}, from=1-1, to=2-1]
+%      \arrow["{1/2,\alpha}"{description}, from=2-3, to=1-3]
+%      \arrow[curve={height=12pt}, from=1-3, to=2-3]
+%      \arrow["loop"{description}, from=2-7, to=1-7]
+%      \arrow[curve={height=12pt}, from=1-7, to=2-7]
+%      \arrow["{1,\beta}"{description}, from=2-1, to=4-3]
+%      \arrow["{1/4}"{description}, from=2-5, to=4-3]
+%      \arrow[from=4-3, to=5-3]
+%      \arrow["loop"{description}, curve={height=12pt}, from=5-3, to=4-3]
+%  \end{tikzcd}\]
+On obtient: 
+\[x_0=min(0,(x_0+x_1)/2)\]
+\[x_1=(x_1+x_2)/2=3/4\]
+\[x_2=3/4\]
+
+\begin{prop}
+    Dans $M^{min}$, tout état de $\tilde{S}\backslash\{s+,s-\}$ est 
+    une $TMEC$ pour $M^{min}$.(et $s+$ et $s-$ sont des BMEC)
+\end{prop}
+
+\begin{prop}
+    Dans $M^{min}$, tout chemin ''finit'' avec proba $1$ 
+    dans $s-$ ou $s+$. (On peut pas boucler dans les $t$!)
+\end{prop}
+\textbf{Preuve:} $G_0=\{s-,s+\}$, \[G_{i+1}=
+\{s\in \tilde{S}\backslash \bigcup_{j\leq i} G_j|
+\forall \alpha\in \tilde{Act}(s), \exists s'\in\bigcup_{j\leq i}G_j
+~t.q.~ P(s,\alpha, s')>0\}\]
+Les $G_i$ partitionnent $\tilde{S}$. Supp que $s\in \tilde{S}-\bigcup G_i=P$.
+Pour tout $s\in P$, il existe $\alpha\in Act(s)$, tout les 
+états tq $P(s,\alpha, t)>0$ sont dans $P$. $P$ définit 
+une sous MDP de $M$. (Bon la preuve est reloue)
+
+\begin{prop}
+    
+\end{prop}
+
+\subsection{Décomposition pour MAX}
+
+\begin{defn}
+    $M=(S\ldots)$, $S=\bigcup_{m=0}^{M}B_m\cup\bigcup_{l=1}^{L}\{t_l\}\cup\bigcup_{k=1}^{K}S_k$. 
+    La "max-réduction" $M^{max}$ de $M$ est un MDP=$\bar{M}$:(On veut garantir l'unicité du point fixe)
+    \begin{itemize}
+        \item $\bar{S}=\{s-,s+,t_1,\ldots,t_K, s_1,\ldots,s_K\}$
+        \item $\bar{Act}(s-)=Act(s+)=\{loop\}$
+        \item $\bar{Act}(t_i)$, $\forall 1\leq k\leq K$, 
+        \[
+            \bar{Act}(s_k)=\{\alpha | \exists s\in S_k\wedge 
+            \alpha\in Act(s)\wedge \exists t\in S-S_k~tq~Pr(s,\alpha,t)>0\}
+        \]
+        \item $\bar{P}(t_i,\alpha, t_j)=P(t_i,\alpha, t_j)$
+        \item Pareil que min pour $s+, s-,t_i$
+        \item Pour $s\in S_k$ tq $\alpha\in Act(s)$: $\bar{P}(s_k,\alpha, s+)=P(s,\alpha,s+)~pour~s\in S_k~tq~\alpha\in Act(s)$
+        \item $\bar{P}(s_k, \alpha, s-)=P(s,\alpha, \bigcup B_i)$
+        \item Pour $\alpha\in Act(s)$, $s\in S_k$: $\bar{P}(s_k, \alpha, t_i)=P(s,\alpha, t_i)$
+        \item Pour $\alpha\in Act(s)$, $s\in S_k$, $s'\in S_{k'}$: $\bar{P}(s_k, \alpha, s_{k'})$
+    \end{itemize}
+\end{defn}
+
+Le $M^{max}$ obtenu pour la chaine de tout à l'heure: (en commentaire dans le tex)
+% https://q.uiver.app/#q=WzAsNixbMiw1LCIodSkiXSxbNCw1LCIodikiXSxbMCwzLCIocykiXSxbMiwxLCIocyspIl0sWzIsMywiKHQpIl0sWzMsMCwiKHMrKSJdLFsxLDAsImxvb3AiLDAseyJjdXJ2ZSI6M31dLFswLDEsImxvb3AiLDAseyJjdXJ2ZSI6M31dLFs0LDMsIjAuMixcXGFscGhhIl0sWzQsMiwiMC41LFxcYWxwaGEiLDJdLFs0LDAsIjAuMyxcXGFscGhhIiwxXSxbMiwwLCIwLjUsXFxiZXRhIiwxLHsiY3VydmUiOjJ9XSxbMiwzLCIwLjUsXFxiZXRhIiwxXSxbMyw1LCJsb29wIiwyLHsiY3VydmUiOjN9XSxbNSwzLCJsb29wIiwyLHsiY3VydmUiOjR9XSxbMiwzLCIwLjMsXFxhbHBoYSIsMix7ImN1cnZlIjotNX1dLFsyLDAsIjAuNyxcXGFscGhhIiwxLHsiY3VydmUiOjV9XV0=
+% \[\begin{tikzcd}
+% 	&&& {(s+)} \\
+% 	&& {(s+)} \\
+% 	\\
+% 	{(s)} && {(t)} \\
+% 	\\
+% 	&& {(u)} && {(v)}
+% 	\arrow["loop", curve={height=18pt}, from=6-5, to=6-3]
+% 	\arrow["loop", curve={height=18pt}, from=6-3, to=6-5]
+% 	\arrow["{0.2,\alpha}", from=4-3, to=2-3]
+% 	\arrow["{0.5,\alpha}"', from=4-3, to=4-1]
+% 	\arrow["{0.3,\alpha}"{description}, from=4-3, to=6-3]
+% 	\arrow["{0.5,\beta}"{description}, curve={height=12pt}, from=4-1, to=6-3]
+% 	\arrow["{0.5,\beta}"{description}, from=4-1, to=2-3]
+% 	\arrow["loop"', curve={height=18pt}, from=2-3, to=1-4]
+% 	\arrow["loop"', curve={height=24pt}, from=1-4, to=2-3]
+% 	\arrow["{0.3,\alpha}"', curve={height=-30pt}, from=4-1, to=2-3]
+% 	\arrow["{0.7,\alpha}"{description}, curve={height=30pt}, from=4-1, to=6-3]
+% \end{tikzcd}\]
 
 \end{document}
