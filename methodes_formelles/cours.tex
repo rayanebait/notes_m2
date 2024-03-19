@@ -918,4 +918,41 @@ Le $M^{max}$ obtenu pour la chaine de tout à l'heure: (en commentaire dans le t
 % 	\arrow["{0.7,\alpha}"{description}, curve={height=30pt}, from=4-1, to=6-3]
 % \end{tikzcd}\]
 
+\begin{prop}
+    \begin{itemize}
+        \item Les probas max sont conservées en passant à $M^{max}$.
+        \item Dans $M^{max}$, tout état de $\bar{S}-\{s+,s-\}$ sont des TMEC.
+    \end{itemize}
+    \[
+        fmax:V\to V;~fmax(\bar{x})=(max_{\alpha\in Act(s)} \sum_{s\in \bar{S}} Pr(s,\alpha, t).x+)_{s\in \bar{S}}\]
+\end{prop}
+\begin{prop}
+    Le vecteur $P_{M^{max}}^{max}(Fs+)$ est l'unique point 
+    fixe de fmax! (pas vrai pour min?)
+\end{prop}
+
+\textbf{Algo:}(min)
+On définit deux séquences $x$ (sous approx de $P^{min}$) et $y$ (sur approx de $P^{min}$).
+$\begin{cases}
+    &x^{(0)}=(1~pour~s+,0~sinon)\\
+    &y^{(0)}=(0~pour~s-,1~sinon)\\
+\end{cases}$
+et $\begin{cases}
+    &x^{(n+1)}=f_{min}(x^{(n)})\\
+    &y^{(0)}=f_{min}(y^{(n)})\\
+\end{cases}$.\\
+(max): $\begin{cases}
+    &x^{(0)}=(1~pour~s+,0~sinon)\\
+    &y^{(0)}=(0~pour~s-,1~sinon)\\
+\end{cases}$
+et $\begin{cases}
+    &x^{(n+1)}=f_{max}(x^{(n)})\\
+    &y^{(0)}=f_{max}(y^{(n)})\\
+\end{cases}$.\\
+
+\begin{prop}
+    L'algo converge en au plus $n.[\log(\epsilon)/\log(1-\eta^n)]$. 
+    ($n$ le nombres des $G_i$ et $\eta$ la proba min $>0$ dans $M$)
+\end{prop}
+
 \end{document}
