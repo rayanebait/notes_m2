@@ -14,6 +14,8 @@ parser.add_argument("-k", "--dimension", default="5")
 parser.add_argument("-p", "--characteristic", default="997")
 parser.add_argument("-d", "--fielddimension", default="1")
 parser.add_argument("-a", "--algo", default="bw")
+parser.add_argument("-m", "--multiplicity", default="1")
+parser.add_argument("-i", "--iterations", default="1")
 
 args=parser.parse_args()
 
@@ -166,7 +168,7 @@ class RandRS:
 
 		return Q.roots()
 		
-	def DecodeGuruswamiSudan(self, u, r, l, m):
+	def DecodeGuruswamiSudan(self, y, r, l, m):
 		"""
 		inspiré de 
 
@@ -180,14 +182,16 @@ https://en.wikipedia.org/wiki/Guruswami%E2%80%93Sudan_list_decoding_algorithm
 
 			Q(X,Y)=\sum_{i+(k-1)*j}<=m a_i,j X^iY^j
 
-		On peut ensuite écrire Q(X+a,Y+b)=\sum X^i*Y^jQ^(i,j)(a, b)
+		On peut ensuite écrire Q(X+a,Y+b)=\sum X^u*Y^uQ^(u,v)(a, b)
 		avec 
 
-			Q^(i,j)(X,Y)=\sum_k,l  a_i,j*binom(i,k)*binom(j,l)*X^(i-k)*Y^(j-l)
+			Q^(u,v)(X,Y)=\sum_i,j  a_i,j*binom(i,u)*binom(j,v)*X^(i-u)*Y^(j-v)
 
-		On cherche des Q_(i,j) tel que Q a multiplicité m>= en (a, b)
-		On traduit que Q a multiplicité m>= en (a,b) par Q_(i,j)(a,b)=0
-		pour tout 0 <= i+j <= m-1. 
+		On traduit que Q a multiplicité m>= en (a,b) par Q_(u,v)(a,b)=0
+		pour tout 0 <= u+v <= m-1. En pratique on associe au monome 
+		X^u*Y^v la ligne d'équations de coefficients :
+			(a_i,j binom(i,u)*binom(j,v)*a^(i-u)*b^(j-v))_i,j
+		tel que i+(k-1)*j<m(n-r)
 		"""
 		#ncols=(l+1)*(m*self.n-1)-((self.k-1)*(l+1)*l)//2
 		#neqs=self.n*(m*(m+1))/2
@@ -199,35 +203,36 @@ https://en.wikipedia.org/wiki/Guruswami%E2%80%93Sudan_list_decoding_algorithm
 		lst_monomials=list(monomials(l,m,self.k,self.n,r))
 
 		M_tab=[]
-		for (x,y) in zip(self.x, u):
-			line=[]
-			for i in range(m):
-				for j in range(m-i):
-					part_line={}
+		for (a,b) in zip(self.x, y):
+			for u in range(m):
+				for v in range(m-u):
+					line=[]
+					map_line={}
 					for monomial in lst_monomials:
-						(k, l)=monomial
-						if k>=i and l>=j:
-							if k>i:
-								coeff_i=binomial(k, i) * x**(k-i)
+						(i, j)=monomial
+						if i>=u and j>=v:
+							if i>u:
+								coeff_i=binomial(i, u) * a**(i-u)
 							else:
 								coeff_i=_sage_const_1 
-							if l>j:
-								coeff_j=binomial(l, j) * y**(l-j)
+							if j>v:
+								coeff_j=binomial(j, v) * b**(j-v)
 							else:
 								coeff_j=_sage_const_1 
-						part_line[monomial]=coeff_i*coeff_j
+						map_line[monomial]=coeff_i*coeff_j
 					for monomial in lst_monomials:
-						line.append(part_line.get(monomial, _sage_const_0 ))
-			M_tab.append(line)
+						line.append(map_line.get(monomial, _sage_const_0 ))
+					M_tab.append(line)
 
 
 		R = self.field['X']; (X,) = R._first_ngens(1)
 		L = R['Y']; (Y,) = L._first_ngens(1)
 
 		M=matrix(self.field, M_tab)
-		print(f"Equations to solve: {M}\n")
 		S=M.right_kernel()
-		print(f"Kernel of the system: {S}\n")
+		if self.verbose:
+			print(f"Equations to solve: {M.parent()}\n")
+			print(f"Kernel of the system: {S}\n")
 		coeffs = S.basis()[_sage_const_0 ]
 
 
@@ -262,41 +267,55 @@ class Canal:
 RS=RandRS(p,d,n,k, Verbose=args.verbose)
 C=Canal(p**d, n, Verbose=args.verbose)
 
-m=vector(RS.field, [RS.field.random_element() for i in range(RS.k)])
-c=RS.Encode(m)
+iterations=Integer(args.iterations)
 
 if args.algo == "bw":
+	print(f"Decoding with Berlekamp-Welch decoder\n")
 	t=floor((RS.n-RS.k)/_sage_const_2 )
-	decoded=RS.DecodeBerlekampWelch(C.go_through(c, t))
+	for i in range(iterations):
+		m=vector(RS.field, [RS.field.random_element() for i in range(RS.k)])
+		c=RS.Encode(m)
+		decoded=RS.DecodeBerlekampWelch(C.go_through(c, t))
+		print(f"Original message: {m}")
+		print(f"Decoded message: {decoded}")
 
-	print(f"Original message: {m}")
-	print(f"Decoded message: {decoded}")
 elif args.algo == "sudan":
+	print(f"Decoding with Sudan decoder (Not working, call -a 'gs' -m 1\n")
 	r=floor(RS.n-(RS.n)*sqrt(RS.k/RS.n)*( sqrt(k/n + _sage_const_8 ) - sqrt(k/n) )/_sage_const_2 )
 	l=ceil((n-r)/(k-_sage_const_1 )-_sage_const_1 )
 
-	m_=RS.DecodeSudan(C.go_through(c, r), r, l)
+	for i in range(iterations):
+		m=vector(RS.field, [RS.field.random_element() for i in range(RS.k)])
+		c=RS.Encode(m)
+		m_=RS.DecodeSudanCorr(C.go_through(c, r), r, l)
+		print(f"Original message: {m}")
+		print(f"Found the following candidate messages: \n\n{m_}")
 
-	print(f"Original message: {m}")
-	print(f"Found the following candidate messages: \n\n{m_}")
 elif args.algo == "sudancorr":
 	r=floor(RS.n-(RS.n)*sqrt(RS.k/RS.n)*( sqrt(k/n + _sage_const_8 ) - sqrt(k/n) )/_sage_const_2 )
 	l=ceil((n-r)/(k-_sage_const_1 )-_sage_const_1 )
 
-	m_=RS.DecodeSudanCorr(C.go_through(c, r), r, l)
+	for i in range(iterations):
+		m=vector(RS.field, [RS.field.random_element() for i in range(RS.k)])
+		c=RS.Encode(m)
+		m_=RS.DecodeSudanCorr(C.go_through(c, r), r, l)
+		print(f"Original message: {m}")
+		print(f"Found the following candidate messages: \n\n{m_}")
 
-	print(f"Original message: {m}")
-	print(f"Found the following candidate messages: \n\n{m_}")
 elif args.algo == "gs":
 	r=floor( RS.n*(_sage_const_1 -sqrt(k/n)) )
 
-	mult=_sage_const_2 
+	mult=Integer(args.multiplicity)
 	l=floor(mult*(n-r)/(k-_sage_const_1 )-_sage_const_1 )
 
-	m_=[tuple(root[_sage_const_0 ]) for root in RS.DecodeGuruswamiSudan(C.go_through(c,r),r,l,mult)]
-	print(f"Original message: {m}")
+	iterations=Integer(args.iterations)
+	for i in range(iterations):
+		m=vector(RS.field, [RS.field.random_element() for i in range(RS.k)])
+		c=RS.Encode(m)
+		m_=[tuple(root[_sage_const_0 ]) for root in RS.DecodeGuruswamiSudan(C.go_through(c,r),r,l,mult)]
+		print(f"\nOriginal message: {m}")
+		print(f"Found the following candidate messages: \n\n{m_}")
 
-	print(f"Found the following candidate messages: \n\n{m_}")
 
 
 
