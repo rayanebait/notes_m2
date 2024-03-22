@@ -304,5 +304,27 @@ du mot reçu.Pour que le décodeur reste en temps polynomial
 \end{rem}
 
 
+\section{Codes LDPC}
+
+\begin{lem}[Pilling-Up-Lemma]
+    $(p_i)$, ($p_i=P(b_i=1)$, $b_i$ 
+    une variable aléatoire dans $\F_2$). Soit $y=c+e$ avec $c\in C$ et $e_i\leftarrow Bernoulli$:\\
+    \indent Pour tout $h\in C^{\perp}~t.q.~|h|=w$
+    \[P(<y,h>=0)=(1+\prod_{i\in Supp(h)}(1-2Pi))\]
+\end{lem}
+(Dans le pdf)
+En gros l'application c'est que on suppose les 
+équations de parités n'ayant pas de $1$ en commun. 
+(Conditionnellement indépendants par rapport à b)
+
+\textbf{Questions:}
+\begin{enumerate}
+    \item Etant donné un code LDPC et une matrice de parité 
+quelconque, est-ce qu'on peut trouver une matrice de 
+parité creuse ?
+    \item $E(\#(mots~de~poids~w~dans~code~dual~aleatoires)):=
+    E(w)=2^{n-k}binom(n,w)/2^n$
+    
+\end{enumerate}
 
 \end{document}
